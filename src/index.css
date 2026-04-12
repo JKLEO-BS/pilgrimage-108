@@ -1,0 +1,655 @@
+/* ═══════════════════════════════════════════════════════
+   108 사찰 순례 — Zen Beige Design System
+   메인 컬러: 베이지(#F5F5DC), 다크 그린(#2D4A3E), 골드(#D4AF37)
+   폰트: Noto Serif KR (Google Fonts)
+   ═══════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;700&display=swap');
+
+/* ── CSS 변수 ─────────────────────────────────────────── */
+:root {
+  --beige:       #F5F5DC;
+  --beige-dark:  #EAE8CC;
+  --beige-light: #FAFAF0;
+  --green:       #2D4A3E;
+  --green-mid:   #3D6352;
+  --green-light: #EAF0EC;
+  --gold:        #D4AF37;
+  --gold-dark:   #B8960C;
+  --gold-light:  #F5E27A;
+  --brown:       #5C3D2E;
+  --gray:        #8A8A7A;
+  --gray-light:  #D8D8C8;
+  --white:       #FFFFFF;
+  --shadow:      rgba(45, 74, 62, 0.12);
+
+  --sidebar-w:   320px;
+  --font:        'Noto Serif KR', 'Malgun Gothic', serif;
+  --transition:  0.2s ease;
+}
+
+/* ── 전역 리셋 ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font);
+  background: var(--beige);
+  color: var(--brown);
+  height: 100dvh;
+  overflow: hidden;
+}
+button { font-family: var(--font); cursor: pointer; border: none; background: none; }
+input  { font-family: var(--font); }
+
+/* ── 앱 레이아웃 ─────────────────────────────────────── */
+.app-layout {
+  display: flex;
+  height: 100dvh;
+  width: 100vw;
+}
+
+/* ── 사이드바 ────────────────────────────────────────── */
+.sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  background: var(--beige-light);
+  border-right: 1px solid var(--gray-light);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 2px 0 12px var(--shadow);
+  z-index: 10;
+}
+
+/* 헤더 */
+.sidebar-header {
+  background: var(--green);
+  padding: 16px 20px;
+  flex-shrink: 0;
+}
+.header-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.header-logo { font-size: 28px; }
+.header-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--beige);
+  letter-spacing: 1px;
+}
+.header-sub {
+  font-size: 11px;
+  color: var(--gold-light);
+  letter-spacing: 2px;
+  margin-top: 1px;
+  font-weight: 300;
+}
+
+/* 섹션 래퍼 */
+.sidebar-section {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--gray-light);
+  flex-shrink: 0;
+}
+
+/* GPS 상태 */
+.gps-status {
+  padding: 6px 16px;
+  font-size: 11px;
+  min-height: 28px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--gray-light);
+}
+.gps-loading { color: var(--gray); }
+.gps-ok { color: var(--green-mid); font-weight: 500; }
+.gps-error { display: flex; align-items: center; gap: 8px; color: #c0392b; }
+.gps-retry {
+  font-size: 11px; padding: 2px 8px; border-radius: 10px;
+  background: var(--beige-dark); color: var(--green); border: 1px solid var(--gray-light);
+}
+
+/* 탭 */
+.sidebar-tabs {
+  display: flex;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--gray-light);
+}
+.sidebar-tab {
+  flex: 1;
+  padding: 10px;
+  font-size: 13px;
+  color: var(--gray);
+  border-bottom: 2px solid transparent;
+  transition: var(--transition);
+}
+.sidebar-tab.active {
+  color: var(--green);
+  font-weight: 500;
+  border-bottom-color: var(--gold);
+  background: var(--beige);
+}
+.sidebar-tab:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* 콘텐츠 스크롤 영역 */
+.sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.sidebar-content::-webkit-scrollbar { width: 4px; }
+.sidebar-content::-webkit-scrollbar-thumb { background: var(--gray-light); border-radius: 4px; }
+
+/* ── 진척도 ───────────────────────────────────────────── */
+.progress-container { }
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+.progress-main-count { font-size: 14px; }
+.count-visited { font-size: 22px; font-weight: 700; color: var(--gold-dark); }
+.count-divider { color: var(--gray); }
+.count-total { font-weight: 500; }
+.count-unit { font-size: 12px; color: var(--gray); }
+.progress-percent { font-size: 18px; font-weight: 700; color: var(--green); }
+
+.progress-bar-bg {
+  position: relative;
+  height: 8px;
+  background: var(--beige-dark);
+  border-radius: 4px;
+  overflow: visible;
+  margin-bottom: 6px;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+  border-radius: 4px;
+  transition: width 0.8s cubic-bezier(.4,0,.2,1);
+  min-width: 0;
+}
+.milestone {
+  position: absolute;
+  top: -2px;
+  width: 2px;
+  height: 12px;
+  background: var(--beige-dark);
+  border-radius: 1px;
+  transform: translateX(-50%);
+}
+.milestone.reached { background: var(--gold-dark); }
+
+.progress-stage {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.stage-emoji { font-size: 13px; }
+.stage-label { font-size: 12px; color: var(--green-mid); font-weight: 500; }
+
+.progress-unesco {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.unesco-label { font-size: 10px; color: var(--gray); }
+.unesco-dots { display: flex; gap: 3px; flex-wrap: wrap; }
+.unesco-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--gray-light);
+  transition: background var(--transition);
+}
+.unesco-dot.achieved { background: var(--gold); }
+.unesco-count { font-size: 11px; color: var(--green); font-weight: 500; margin-left: 2px; }
+
+/* ── 사찰 목록 ───────────────────────────────────────── */
+.temple-list-container { padding: 12px 0; }
+
+.search-wrap {
+  position: relative;
+  margin: 0 12px 10px;
+  display: flex;
+  align-items: center;
+}
+.search-icon { position: absolute; left: 10px; font-size: 13px; }
+.search-input {
+  width: 100%;
+  padding: 7px 30px 7px 32px;
+  border: 1px solid var(--gray-light);
+  border-radius: 16px;
+  background: var(--beige);
+  font-size: 13px;
+  color: var(--brown);
+  outline: none;
+  transition: border-color var(--transition);
+}
+.search-input:focus { border-color: var(--green); }
+.search-clear {
+  position: absolute; right: 10px;
+  font-size: 11px; color: var(--gray);
+}
+
+.region-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 0 12px 8px;
+  overflow-x: auto;
+}
+.region-tabs::-webkit-scrollbar { display: none; }
+.region-tab {
+  padding: 4px 10px;
+  font-size: 11px;
+  border-radius: 12px;
+  white-space: nowrap;
+  color: var(--gray);
+  border: 1px solid var(--gray-light);
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+.region-tab.active {
+  background: var(--green);
+  color: var(--beige);
+  border-color: var(--green);
+}
+
+.filter-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px 8px;
+}
+.toggle-label {
+  display: flex; align-items: center; gap: 6px;
+  cursor: pointer; font-size: 12px; color: var(--green-mid);
+}
+.toggle-checkbox { accent-color: var(--green); width: 14px; height: 14px; }
+.list-count { font-size: 11px; color: var(--gray); }
+
+.temple-list { display: flex; flex-direction: column; gap: 1px; }
+
+.temple-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  text-align: left;
+  width: 100%;
+  transition: background var(--transition);
+  border-left: 3px solid transparent;
+}
+.temple-list-item:hover { background: var(--beige-dark); }
+.temple-list-item.selected {
+  background: var(--green-light);
+  border-left-color: var(--gold);
+}
+.temple-list-item.visited .item-name { color: var(--green); }
+
+.item-index {
+  font-size: 10px; color: var(--gray-light);
+  font-weight: 300; min-width: 26px;
+}
+.item-info { flex: 1; display: flex; flex-direction: column; gap: 1px; }
+.item-name { font-size: 14px; font-weight: 500; color: var(--brown); }
+.item-region { font-size: 11px; color: var(--gray); }
+.item-right { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+.item-unesco { font-size: 12px; }
+.item-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+}
+.item-dot.gold { background: var(--gold); }
+.item-dot.gray { background: var(--gray-light); }
+
+.list-empty {
+  text-align: center; padding: 30px;
+  color: var(--gray); font-size: 13px;
+}
+
+/* ── 사찰 상세 ───────────────────────────────────────── */
+.detail-panel {
+  padding: 16px;
+  position: relative;
+}
+.detail-close {
+  position: absolute; top: 12px; right: 12px;
+  font-size: 14px; color: var(--gray);
+  padding: 4px 8px; border-radius: 50%;
+  transition: background var(--transition);
+}
+.detail-close:hover { background: var(--beige-dark); }
+
+.detail-status-row {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 10px; flex-wrap: wrap;
+}
+.detail-status-badge {
+  font-size: 12px; padding: 3px 10px;
+  border-radius: 12px; font-weight: 500;
+}
+.detail-status-badge.visited { background: #FFF8E1; color: var(--gold-dark); }
+.detail-status-badge.unvisited { background: var(--beige-dark); color: var(--gray); }
+.detail-unesco { font-size: 11px; color: #1565C0; }
+
+.detail-name {
+  font-size: 22px; font-weight: 700;
+  color: var(--green); margin-bottom: 2px;
+}
+.detail-name-en {
+  font-size: 12px; color: var(--gray);
+  letter-spacing: 1px; margin-bottom: 14px;
+}
+
+.detail-info-grid {
+  border: 1px solid var(--gray-light);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.info-row {
+  display: flex; align-items: flex-start;
+  gap: 8px; padding: 8px 12px;
+  font-size: 12px;
+  border-bottom: 1px solid var(--gray-light);
+}
+.info-row:last-child { border-bottom: none; }
+.info-icon { flex-shrink: 0; }
+.info-label { color: var(--gray); min-width: 28px; flex-shrink: 0; }
+.info-value { color: var(--brown); flex: 1; line-height: 1.5; }
+
+.detail-description {
+  font-size: 13px; color: var(--brown);
+  line-height: 1.7; margin-bottom: 12px;
+}
+.detail-visit-date {
+  font-size: 11px; color: var(--green-mid);
+  margin-bottom: 8px;
+}
+.detail-distance {
+  font-size: 12px; color: var(--gray);
+  margin-bottom: 14px; padding: 6px 10px;
+  background: var(--beige-dark); border-radius: 6px;
+}
+.detail-distance.in-range { background: #E8F5E9; color: #2E7D32; }
+.detail-distance.no-gps { color: var(--gray); }
+
+.detail-actions { display: flex; flex-direction: column; gap: 8px; }
+
+.btn-visit {
+  width: 100%; padding: 12px;
+  border-radius: 8px; font-size: 14px; font-weight: 700;
+  letter-spacing: 0.5px;
+  transition: var(--transition);
+}
+.btn-visit.enabled {
+  background: var(--green);
+  color: var(--gold-light);
+  border: 2px solid var(--green);
+}
+.btn-visit.enabled:hover { background: var(--green-mid); }
+.btn-visit.disabled {
+  background: var(--beige-dark);
+  color: var(--gray);
+  cursor: not-allowed;
+  border: 1px solid var(--gray-light);
+}
+.btn-unvisit {
+  width: 100%; padding: 8px;
+  font-size: 12px; color: var(--gray);
+  border: 1px solid var(--gray-light);
+  border-radius: 6px;
+}
+.btn-unvisit:hover { background: var(--beige-dark); }
+
+/* ── 지도 영역 ───────────────────────────────────────── */
+.map-area { flex: 1; position: relative; overflow: hidden; }
+.map-wrapper { width: 100%; height: 100%; position: relative; }
+.leaflet-map { width: 100%; height: 100%; }
+
+/* Leaflet 지도 채도 낮추기 → Zen 분위기 */
+.leaflet-tile-pane { filter: saturate(0.7) brightness(0.96) sepia(0.1); }
+
+/* 팝업 스타일 */
+.leaflet-popup-content-wrapper {
+  border-radius: 10px !important;
+  background: var(--beige-light) !important;
+  border: 1px solid var(--gray-light) !important;
+  box-shadow: 0 4px 16px var(--shadow) !important;
+  padding: 0 !important;
+}
+.leaflet-popup-tip { background: var(--beige-light) !important; }
+.leaflet-popup-content { margin: 0 !important; }
+
+.popup-inner { padding: 12px 14px; min-width: 180px; max-width: 220px; }
+.popup-header {
+  display: flex; gap: 6px; align-items: center;
+  margin-bottom: 6px; flex-wrap: wrap;
+}
+.popup-visited-badge { font-size: 11px; color: var(--green); }
+.popup-unesco-badge { font-size: 10px; color: #1565C0; }
+.popup-name { font-size: 15px; font-weight: 700; color: var(--green); margin-bottom: 2px; }
+.popup-region { font-size: 11px; color: var(--gray); margin-bottom: 4px; }
+.popup-distance { font-size: 11px; color: #1565C0; margin-bottom: 3px; }
+.popup-founded { font-size: 10px; color: var(--gray); margin-bottom: 6px; }
+.popup-desc { font-size: 11px; color: var(--brown); line-height: 1.5; }
+
+/* 지도 범례 */
+.map-legend {
+  position: absolute; bottom: 30px; right: 12px;
+  background: rgba(250, 250, 240, 0.92);
+  border: 1px solid var(--gray-light);
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex; flex-direction: column; gap: 5px;
+  font-size: 12px; z-index: 800;
+  backdrop-filter: blur(4px);
+}
+.legend-item { display: flex; align-items: center; gap: 7px; color: var(--brown); }
+.legend-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.legend-dot.visited { background: var(--gold); }
+.legend-dot.unvisited { background: var(--gray); }
+
+/* ── Leaflet 줌 버튼 재스타일 ─────────────────────────── */
+.leaflet-control-zoom a {
+  background: var(--beige-light) !important;
+  color: var(--green) !important;
+  border-color: var(--gray-light) !important;
+  font-weight: 700 !important;
+}
+.leaflet-control-zoom a:hover { background: var(--beige-dark) !important; }
+
+/* ── 반응형 (모바일) ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .app-layout { flex-direction: column; }
+  .sidebar {
+    width: 100%;
+    height: 45dvh;
+    border-right: none;
+    border-bottom: 1px solid var(--gray-light);
+  }
+  .map-area { height: 55dvh; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   사진 헤더 스타일 (기존 .sidebar-header 를 대체)
+   ═══════════════════════════════════════════════════════ */
+
+.sidebar-header {
+  /* ✅ 이 한 줄만 바꾸면 사진이 배경으로 들어옵니다 */
+  background-image: url('/images/header-temple.jpg');
+  background-size: cover;
+  background-position: center 40%;
+  min-height: 140px;
+  padding: 0;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* 사진 위 어두운 그라디언트 — 글자·진척도 바 선명하게 */
+.header-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(0, 0, 0, 0.50) 0%,
+    rgba(20, 12, 6, 0.70) 100%
+  );
+  padding: 20px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.header-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.header-eyebrow {
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.70);
+  letter-spacing: 3px;
+  margin-bottom: 4px;
+}
+
+.header-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: -0.3px;
+  line-height: 1.1;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+/* 방문 현황 뱃지 */
+.header-badge {
+  background: rgba(112, 130, 56, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  padding: 6px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  backdrop-filter: blur(4px);
+}
+.badge-num {
+  font-size: 18px;
+  font-weight: 800;
+  color: #FFFFFF;
+  line-height: 1;
+}
+.badge-label {
+  font-size: 9px;
+  font-weight: 400;
+  color: rgba(220, 240, 160, 0.9);
+  letter-spacing: 1px;
+}
+
+/* 진척도 바 (사진 헤더용) */
+.header-prog-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.header-prog-track {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.20);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.header-prog-fill {
+  height: 100%;
+  background: #D4C070;
+  border-radius: 4px;
+  transition: width 0.8s cubic-bezier(.4, 0, .2, 1);
+  min-width: 0;
+}
+.header-prog-text {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.90);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+}
+
+/* standalone(설치된 앱) 모드에서 노치 영역 보정 */
+@media (display-mode: standalone) {
+  .header-overlay {
+    padding-top: max(20px, env(safe-area-inset-top));
+  }
+}
+
+/* ── 사찰 상세 사진 영역 ── */
+.detail-photo-skeleton {
+  height: 160px;
+  background: var(--beige-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: var(--gray);
+  margin-bottom: 12px;
+  border-radius: 8px;
+}
+.detail-photo-wrap {
+  margin-bottom: 12px;
+}
+.detail-photo {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+.detail-photo-thumbs {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+  overflow-x: auto;
+}
+.detail-photo-thumbs::-webkit-scrollbar { display: none; }
+.thumb-btn {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  background: none;
+}
+.thumb-btn.active { border-color: var(--gold); }
+.thumb-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 더보기 버튼 */
+.detail-more-btn {
+  font-size: 11px;
+  color: var(--green-mid);
+  font-weight: 500;
+  cursor: pointer;
+  padding: 2px 0;
+  margin-bottom: 10px;
+  display: block;
+  background: none;
+  border: none;
+  font-family: var(--font);
+}
+.detail-more-btn:hover { color: var(--green); }

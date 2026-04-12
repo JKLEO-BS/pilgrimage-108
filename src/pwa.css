@@ -1,0 +1,132 @@
+/* ═══════════════════════════════════════════════════════
+   PWA 전용 스타일 — install-prompt.css
+   index.css 하단에 추가하거나 별도 import
+   ═══════════════════════════════════════════════════════ */
+
+/* ── 오프라인 상태 배너 ──────────────────────────────── */
+.offline-banner {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 9999;
+  background: #5C3D2E;
+  color: var(--beige);
+  font-size: 12px;
+  text-align: center;
+  padding: 7px 16px;
+  letter-spacing: 0.3px;
+  animation: slideDown 0.3s ease;
+}
+@keyframes slideDown {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(0); }
+}
+
+/* ── PWA 설치 배너 (공통) ─────────────────────────────── */
+.install-banner {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9000;
+  width: calc(100% - 32px);
+  max-width: 480px;
+  background: var(--beige-light);
+  border: 1px solid var(--gray-light);
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  box-shadow: 0 8px 32px rgba(45,74,62,0.2);
+  animation: slideUp 0.4s cubic-bezier(.2,.8,.4,1);
+}
+@keyframes slideUp {
+  from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+  to   { transform: translateX(-50%) translateY(0);   opacity: 1; }
+}
+
+.install-icon { font-size: 28px; flex-shrink: 0; }
+
+.install-text { flex: 1; }
+.install-text strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 4px;
+}
+.install-text p {
+  font-size: 12px;
+  color: var(--brown);
+  line-height: 1.6;
+}
+.ios-share {
+  display: inline-block;
+  background: var(--beige-dark);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  color: var(--green);
+}
+
+/* Android 버튼 영역 */
+.install-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.install-btn-dismiss {
+  padding: 7px 14px;
+  font-size: 12px;
+  color: var(--gray);
+  border: 1px solid var(--gray-light);
+  border-radius: 8px;
+  background: var(--beige-dark);
+  font-family: var(--font);
+  cursor: pointer;
+}
+.install-btn-confirm {
+  padding: 7px 18px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold-light);
+  background: var(--green);
+  border-radius: 8px;
+  font-family: var(--font);
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s;
+}
+.install-btn-confirm:hover { background: var(--green-mid); }
+
+/* iOS 닫기 버튼 */
+.install-close {
+  font-size: 14px;
+  color: var(--gray);
+  padding: 2px 6px;
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-family: var(--font);
+}
+.install-close:hover { background: var(--beige-dark); }
+
+/* ── 스플래시 화면 대응 (iOS) ─────────────────────────── */
+/* index.html <head>에 아래 meta 태그 추가 필요:
+   <meta name="apple-mobile-web-app-capable" content="yes">
+   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+*/
+
+/* ── standalone 모드 (설치 후) 여백 보정 ─────────────── */
+@media (display-mode: standalone) {
+  .app-layout {
+    /* iOS safe area (노치·홈 인디케이터) 대응 */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .sidebar-header {
+    /* 상태바와 겹치지 않도록 추가 패딩 */
+    padding-top: max(16px, env(safe-area-inset-top));
+  }
+}
