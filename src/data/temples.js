@@ -13,7 +13,7 @@ export const temples = [
     province: "서울특별시",
     address: "서울 종로구 우정국로 55",
     lat: 37.5738,
-    lng: 126.9822,
+    lng: 126.9818,
     sect: "조계종 총본산",
     founded: "1395년",
     description: "대한불교조계종 총본산. 서울 도심 속 백년 된 회화나무와 등나무가 유명하며, 연등회가 성대하게 열린다.",
