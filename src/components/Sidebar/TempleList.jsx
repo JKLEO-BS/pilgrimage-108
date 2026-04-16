@@ -25,7 +25,10 @@ export default function TempleList({
                   {String(temple.id).padStart(3, "0")}
                 </span>
                 <div className="item-info">
-                  <span className="item-name">{temple.name}</span>
+                  <span className={`item-name ${temple.UNESCO ? "item-name-unesco" : ""}`}>
+                    {temple.name}
+                    {temple.UNESCO && <span className="item-unesco-badge">유네스코</span>}
+                  </span>
                   <span className="item-region">
                     {temple.province
                       .replace("특별자치도", "")
@@ -34,9 +37,6 @@ export default function TempleList({
                   </span>
                 </div>
                 <div className="item-right">
-                  {temple.UNESCO && (
-                    <span className="item-unesco" title="유네스코 세계유산">🌐</span>
-                  )}
                   <span className={`item-dot ${isVisited ? "gold" : "gray"}`} />
                 </div>
               </button>
