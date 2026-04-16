@@ -77,9 +77,9 @@ body {
   background-size: cover;
   background-position: center 40%;
   background-color: var(--green);
-  padding: 10px 16px;
+  padding: 14px 18px;
   flex-shrink: 0;
-  min-height: 72px;
+  min-height: 96px;
   position: relative;
 }
 .app-header-mini::before {
@@ -99,10 +99,11 @@ body {
   gap: 7px;
 }
 .app-header-mini-title {
-  font-size: 20px;
+  font-size: 26px;
   font-weight: 700;
   color: #fff;
   letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 .app-header-mini-sub {
   font-size: 12px;
@@ -118,8 +119,8 @@ body {
   gap: 8px;
 }
 .app-header-mini-prog-track {
-  width: 100px;
-  height: 7px;
+  width: 120px;
+  height: 8px;
   background: rgba(255,255,255,0.2);
   border-radius: 4px;
   overflow: hidden;
@@ -131,12 +132,11 @@ body {
   transition: width 0.4s ease;
 }
 .app-header-mini-stat {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--gold);
   font-weight: 700;
   white-space: nowrap;
 }
-
 /* ── 탭 바 ── */
 .main-tab-bar {
   display: flex;
@@ -577,12 +577,12 @@ body {
   font-size: 11px;
 }
 .filter-search-input {
-  width: 100px;
-  padding: 4px 22px 4px 24px;
+  width: 130px;
+  padding: 5px 22px 5px 26px;
   border: 1px solid var(--gray-light);
   border-radius: 12px;
   background: var(--beige);
-  font-size: 11px;
+  font-size: 13px;
   color: var(--brown);
   outline: none;
   font-family: var(--font);
@@ -601,8 +601,8 @@ body {
 }
 .filter-region-tabs::-webkit-scrollbar { display: none; }
 .filter-region-tab {
-  padding: 3px 7px;
-  font-size: 10px;
+  padding: 4px 9px;
+  font-size: 12px;
   border-radius: 10px;
   white-space: nowrap;
   color: var(--gray);
@@ -622,21 +622,42 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 3px 12px 6px;
+  padding: 3px 14px 7px 16px;
 }
 .filter-visited-label {
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-size: 11px;
+  gap: 6px;
+  font-size: 13px;
   color: var(--green-mid);
   cursor: pointer;
 }
 .filter-visited-check {
   accent-color: var(--green);
-  width: 13px; height: 13px;
+  width: 14px; height: 14px;
 }
 .filter-count {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--gray);
+  font-weight: 500;
+}
+/* ── 유네스코 표기 ── */
+.item-name-unesco {
+  color: #1565C0;
+}
+.item-unesco-badge {
+  display: inline-block;
+  font-size: 8px;
+  color: #1565C0;
+  border: 1px solid #1565C0;
+  border-radius: 3px;
+  padding: 0px 3px;
+  margin-left: 4px;
+  vertical-align: middle;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  opacity: 0.8;
+}
+.temple-list-item.visited .item-name-unesco {
+  color: #0D47A1;
 }
