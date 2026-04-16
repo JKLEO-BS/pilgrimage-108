@@ -32,8 +32,6 @@ body {
   color: var(--brown);
   height: 100dvh;
   overflow: hidden;
-  display: flex;
-  justify-content: center;
 }
 button { font-family: var(--font); cursor: pointer; border: none; background: none; }
 input  { font-family: var(--font); }
@@ -54,8 +52,6 @@ body {
   overflow: hidden;
   background: var(--beige);
   width: 100%;
-  max-width: 430px;
-  box-shadow: 0 0 40px rgba(0,0,0,0.5);
 }
 
 /* 오프라인 배너 */
@@ -71,13 +67,13 @@ body {
 /* ── 초소형 헤더 ── */
 .app-header-mini {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: flex-end;
   background-image: url('/images/header-temple.jpg');
   background-size: cover;
   background-position: center 40%;
   background-color: var(--green);
-  padding: 14px 18px;
+  padding: 12px 16px 12px;
   flex-shrink: 0;
   min-height: 96px;
   position: relative;
@@ -88,15 +84,14 @@ body {
   inset: 0;
   background: rgba(20, 40, 30, 0.65);
 }
-.app-header-mini-left,
-.app-header-mini-right {
+.app-header-mini-row1 {
   position: relative;
   z-index: 1;
+  margin-bottom: 10px;
 }
-.app-header-mini-left {
-  display: flex;
-  align-items: baseline;
-  gap: 7px;
+.app-header-mini-row2 {
+  position: relative;
+  z-index: 1;
 }
 .app-header-mini-title {
   font-size: 26px;
@@ -105,21 +100,16 @@ body {
   letter-spacing: 0.02em;
   white-space: nowrap;
 }
-.app-header-mini-sub {
+.app-header-mini-stat {
+  display: block;
+  text-align: right;
   font-size: 12px;
-  color: rgba(255,255,255,0.6);
-}
-.app-header-mini-right {
-  display: flex;
-  align-items: center;
-}
-.app-header-mini-prog-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  color: var(--gold);
+  font-weight: 700;
+  margin-bottom: 3px;
 }
 .app-header-mini-prog-track {
-  width: 120px;
+  width: 100%;
   height: 8px;
   background: rgba(255,255,255,0.2);
   border-radius: 4px;
@@ -128,14 +118,8 @@ body {
 .app-header-mini-prog-fill {
   height: 100%;
   background: var(--gold);
-  border-radius: 2px;
+  border-radius: 4px;
   transition: width 0.4s ease;
-}
-.app-header-mini-stat {
-  font-size: 16px;
-  color: var(--gold);
-  font-weight: 700;
-  white-space: nowrap;
 }
 /* ── 탭 바 ── */
 .main-tab-bar {
@@ -577,7 +561,7 @@ body {
   font-size: 11px;
 }
 .filter-search-input {
-  width: 130px;
+  width: 160px;
   padding: 5px 22px 5px 26px;
   border: 1px solid var(--gray-light);
   border-radius: 12px;
@@ -660,4 +644,21 @@ body {
 }
 .temple-list-item.visited .item-name-unesco {
   color: #0D47A1;
+}
+/* ── 유네스코 범례 ── */
+.filter-bar-unesco-note {
+  padding: 2px 14px 5px 16px;
+  font-size: 11px;
+  color: var(--gray);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.filter-bar-unesco-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #1565C0;
+  flex-shrink: 0;
 }
