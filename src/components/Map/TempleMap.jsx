@@ -21,20 +21,15 @@ async function getCoordsByAddress(address) {
   });
 }
 
-// 핀 모양 SVG 마커 생성
+// 연꽃 마커 — 바탕 없음, 황금 테두리
 function makeMarkerSvg(temple, visited, isSelected) {
-  const w = isSelected ? 44 : 32;
-  const h = isSelected ? 56 : 40;
-  const fill = visited ? "#D4AF37" : (isSelected ? "#2D4A3E" : "#8A8A7A");
-  const inner = visited
-    ? `<path d="M12 18 L15.5 21.5 L22 14" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`
-    : `<text x="16" y="20" text-anchor="middle" font-size="9" fill="white" font-weight="bold" font-family="sans-serif">${temple.id}</text>`;
+  const size = isSelected ? 40 : 30;
+  const strokeW = isSelected ? 3 : 2;
+  const strokeOpacity = visited ? "1" : "0.5";
 
-  return `<svg width="${w}" height="${h}" viewBox="0 0 32 40" xmlns="http://www.w3.org/2000/svg">
-    <path d="M16 38 C16 38 3 24 3 14 A13 13 0 0 1 29 14 C29 24 16 38 16 38Z"
-      fill="${fill}" stroke="white" stroke-width="2"/>
-    <circle cx="16" cy="14" r="8" fill="rgba(255,255,255,0.2)"/>
-    ${inner}
+  return `<svg width="${size}" height="${size}" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="20" cy="20" r="18" fill="none" stroke="#D4AF37" stroke-width="${strokeW}" stroke-opacity="${strokeOpacity}"/>
+    <text x="20" y="27" text-anchor="middle" font-size="${isSelected ? 20 : 15}">🪷</text>
   </svg>`;
 }
 
@@ -49,7 +44,6 @@ export default function TempleMap({
   const [mapError, setMapError] = useState(null);
   const [mapLoading, setMapLoading] = useState(true);
 
-  // SDK 로드
   useEffect(() => {
     if (!KAKAO_KEY) {
       setMapError("카카오맵 API 키가 없습니다.");
@@ -118,8 +112,7 @@ export default function TempleMap({
       }
       if (!lat || !lng) continue;
 
-      const w = isSelected ? 44 : 32;
-      const h = isSelected ? 56 : 40;
+      const size = isSelected ? 40 : 30;
       const svg = makeMarkerSvg(temple, visited, isSelected);
 
       const marker = new window.kakao.maps.Marker({
@@ -127,8 +120,8 @@ export default function TempleMap({
         position: new window.kakao.maps.LatLng(lat, lng),
         image: new window.kakao.maps.MarkerImage(
           `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`,
-          new window.kakao.maps.Size(w, h),
-          { offset: new window.kakao.maps.Point(w / 2, h) }
+          new window.kakao.maps.Size(size, size),
+          { offset: new window.kakao.maps.Point(size / 2, size / 2) }
         ),
         title: temple.name,
         zIndex: isSelected ? 10 : visited ? 5 : 1,
@@ -147,7 +140,7 @@ export default function TempleMap({
             <div style="font-size:14px;font-weight:800;color:#2D4A3E;">${temple.name}</div>
             <div style="font-size:11px;color:#8A7A72;">${temple.province}</div>
             ${dist !== null ? `<div style="font-size:11px;color:#1565C0;margin-top:4px;">📡 ${formatDistance(dist)}</div>` : ""}
-            <div style="font-size:11px;color:#2D4A3E;margin-top:6px;cursor:pointer;font-weight:bold;">▶ 자세히 보기</div>
+            <div style="font-size:11px;color:#2D4A3E;margin-top:6px;font-weight:bold;">▶ 자세히 보기</div>
           </div>`,
           removable: true,
         });
@@ -159,7 +152,6 @@ export default function TempleMap({
       markersRef.current.push(marker);
     }
 
-    // 선택된 사찰로 지도 이동
     if (selectedTemple) {
       let lat = selectedTemple.lat;
       let lng = selectedTemple.lng;
@@ -173,7 +165,6 @@ export default function TempleMap({
     }
   }
 
-  // 내 위치 마커 (파란 점)
   useEffect(() => {
     if (!window.kakao || !kakaoMapRef.current || !userPosition) return;
     if (userMarkerRef.current) userMarkerRef.current.setMap(null);
@@ -193,7 +184,6 @@ export default function TempleMap({
     });
   }, [userPosition]);
 
-  // 내 위치로 이동
   const handleGoToMyLocation = () => {
     if (kakaoMapRef.current && userPosition) {
       kakaoMapRef.current.panTo(
@@ -207,7 +197,6 @@ export default function TempleMap({
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
       <div ref={mapRef} style={{ width: "100%", height: "100%" }} />
 
-      {/* 로딩 */}
       {mapLoading && (
         <div className="map-overlay-center">
           <div style={{ fontSize: "32px" }}>🗺️</div>
@@ -215,7 +204,6 @@ export default function TempleMap({
         </div>
       )}
 
-      {/* 오류 */}
       {mapError && (
         <div className="map-overlay-center">
           <div style={{ fontSize: "32px" }}>⚠️</div>
@@ -225,14 +213,11 @@ export default function TempleMap({
 
       {!mapLoading && !mapError && (
         <>
-          {/* 내 위치로 이동 버튼 */}
           {userPosition && (
             <button className="map-my-location-btn" onClick={handleGoToMyLocation} title="내 위치로 이동">
               📍
             </button>
           )}
-
-          {/* 범례 */}
           <div className="map-legend">
             <div className="map-legend-item">
               <span className="map-legend-dot visited" />방문 완료
