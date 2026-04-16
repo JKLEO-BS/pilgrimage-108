@@ -230,9 +230,17 @@ export default function TempleMap({
 
           {/* 내 위치 버튼 */}
           {userPosition && (
-            <button className="map-my-location-btn" onClick={handleGoToMyLocation} title="내 위치로 이동">
-              📍
-            </button>
+<button className="map-my-location-btn" onClick={handleGoToMyLocation} title="내 위치로 이동">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="12" r="10" fill="white"/>
+    <circle cx="12" cy="12" r="6" stroke="#2D4A3E" strokeWidth="2" fill="none"/>
+    <circle cx="12" cy="12" r="1.5" fill="#2D4A3E"/>
+    <line x1="12" y1="2" x2="12" y2="5.5" stroke="#2D4A3E" strokeWidth="2" strokeLinecap="round"/>
+    <line x1="12" y1="18.5" x2="12" y2="22" stroke="#2D4A3E" strokeWidth="2" strokeLinecap="round"/>
+    <line x1="2" y1="12" x2="5.5" y2="12" stroke="#2D4A3E" strokeWidth="2" strokeLinecap="round"/>
+    <line x1="18.5" y1="12" x2="22" y2="12" stroke="#2D4A3E" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+</button>
           )}
 
           {/* 범례 */}
