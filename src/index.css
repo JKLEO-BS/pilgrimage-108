@@ -522,7 +522,7 @@ input  { font-family: var(--font); }
   font-family: var(--font);
 }
 
-/* ── GPS 관련 (레거시 호환) ── */
+/* ── GPS 관련 ── */
 .gps-loading { color: var(--gray); }
 .gps-ok { color: var(--green-mid); font-weight: 500; }
 .gps-error { display: flex; align-items: center; gap: 8px; color: #c0392b; }
