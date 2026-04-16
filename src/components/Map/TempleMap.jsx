@@ -21,12 +21,10 @@ async function getCoordsByAddress(address) {
   });
 }
 
-// 연꽃 마커 — 바탕 없음, 황금 테두리
 function makeMarkerSvg(temple, visited, isSelected) {
   const size = isSelected ? 40 : 30;
   const strokeW = isSelected ? 3 : 2;
   const strokeOpacity = visited ? "1" : "0.5";
-
   return `<svg width="${size}" height="${size}" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
     <circle cx="20" cy="20" r="18" fill="none" stroke="#D4AF37" stroke-width="${strokeW}" stroke-opacity="${strokeOpacity}"/>
     <text x="20" y="27" text-anchor="middle" font-size="${isSelected ? 20 : 15}">🪷</text>
@@ -41,25 +39,19 @@ export default function TempleMap({
   const markersRef = useRef([]);
   const infoWindowRef = useRef(null);
   const userMarkerRef = useRef(null);
+  const prevSelectedIdRef = useRef(null); // 자동이동 버그 방지
   const [mapError, setMapError] = useState(null);
   const [mapLoading, setMapLoading] = useState(true);
+  const [isSatellite, setIsSatellite] = useState(false);
 
   useEffect(() => {
-    if (!KAKAO_KEY) {
-      setMapError("카카오맵 API 키가 없습니다.");
-      setMapLoading(false);
-      return;
-    }
+    if (!KAKAO_KEY) { setMapError("카카오맵 API 키가 없습니다."); setMapLoading(false); return; }
     const existing = document.getElementById("kakao-map-sdk");
     if (existing) existing.remove();
-
     const script = document.createElement("script");
     script.id = "kakao-map-sdk";
     script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_KEY}&autoload=false&libraries=services`;
-    script.onload = () =>
-      window.kakao?.maps
-        ? window.kakao.maps.load(initMap)
-        : setMapError("SDK 로드 실패");
+    script.onload = () => window.kakao?.maps ? window.kakao.maps.load(initMap) : setMapError("SDK 로드 실패");
     script.onerror = () => setMapError("카카오맵 스크립트 로드 오류");
     document.head.appendChild(script);
   }, []);
@@ -73,10 +65,7 @@ export default function TempleMap({
         level: 7,
       });
       kakaoMapRef.current = map;
-      map.addControl(
-        new window.kakao.maps.ZoomControl(),
-        window.kakao.maps.ControlPosition.RIGHT
-      );
+      map.addControl(new window.kakao.maps.ZoomControl(), window.kakao.maps.ControlPosition.RIGHT);
       setMapLoading(false);
       renderMarkers();
     } catch (e) {
@@ -95,10 +84,9 @@ export default function TempleMap({
     markersRef.current = [];
     if (infoWindowRef.current) infoWindowRef.current.close();
 
-    const visible =
-      regionFilter === "전체"
-        ? temples
-        : temples.filter((t) => t.region === regionFilter);
+    const visible = regionFilter === "전체"
+      ? temples
+      : temples.filter((t) => t.region === regionFilter);
 
     for (const temple of visible) {
       const visited = visitedIds.includes(temple.id);
@@ -140,7 +128,6 @@ export default function TempleMap({
             <div style="font-size:14px;font-weight:800;color:#2D4A3E;">${temple.name}</div>
             <div style="font-size:11px;color:#8A7A72;">${temple.province}</div>
             ${dist !== null ? `<div style="font-size:11px;color:#1565C0;margin-top:4px;">📡 ${formatDistance(dist)}</div>` : ""}
-            <div style="font-size:11px;color:#2D4A3E;margin-top:6px;font-weight:bold;">▶ 자세히 보기</div>
           </div>`,
           removable: true,
         });
@@ -152,7 +139,9 @@ export default function TempleMap({
       markersRef.current.push(marker);
     }
 
-    if (selectedTemple) {
+    // ✅ 선택된 사찰이 바뀔 때만 이동 (자동복귀 버그 수정)
+    if (selectedTemple && selectedTemple.id !== prevSelectedIdRef.current) {
+      prevSelectedIdRef.current = selectedTemple.id;
       let lat = selectedTemple.lat;
       let lng = selectedTemple.lng;
       if (selectedTemple.address && (!lat || !lng)) {
@@ -165,6 +154,7 @@ export default function TempleMap({
     }
   }
 
+  // 내 위치 마커
   useEffect(() => {
     if (!window.kakao || !kakaoMapRef.current || !userPosition) return;
     if (userMarkerRef.current) userMarkerRef.current.setMap(null);
@@ -186,11 +176,20 @@ export default function TempleMap({
 
   const handleGoToMyLocation = () => {
     if (kakaoMapRef.current && userPosition) {
-      kakaoMapRef.current.panTo(
-        new window.kakao.maps.LatLng(userPosition.lat, userPosition.lng)
-      );
+      kakaoMapRef.current.panTo(new window.kakao.maps.LatLng(userPosition.lat, userPosition.lng));
       kakaoMapRef.current.setLevel(4);
     }
+  };
+
+  // ✅ 위성지도 토글
+  const handleToggleSatellite = () => {
+    if (!kakaoMapRef.current || !window.kakao) return;
+    if (isSatellite) {
+      kakaoMapRef.current.setMapTypeId(window.kakao.maps.MapTypeId.ROADMAP);
+    } else {
+      kakaoMapRef.current.setMapTypeId(window.kakao.maps.MapTypeId.HYBRID);
+    }
+    setIsSatellite(!isSatellite);
   };
 
   return (
@@ -203,7 +202,6 @@ export default function TempleMap({
           <div style={{ fontSize: "14px", color: "#8A7A72" }}>지도 불러오는 중...</div>
         </div>
       )}
-
       {mapError && (
         <div className="map-overlay-center">
           <div style={{ fontSize: "32px" }}>⚠️</div>
@@ -213,11 +211,31 @@ export default function TempleMap({
 
       {!mapLoading && !mapError && (
         <>
+          {/* 위성지도 토글 버튼 */}
+          <button
+            onClick={handleToggleSatellite}
+            style={{
+              position: "absolute", top: "10px", left: "10px",
+              background: isSatellite ? "#2D4A3E" : "rgba(250,250,240,0.92)",
+              color: isSatellite ? "#D4AF37" : "#2D4A3E",
+              border: "1px solid #D8D4C0",
+              borderRadius: "6px", padding: "5px 10px",
+              fontSize: "11px", fontWeight: "600",
+              cursor: "pointer", zIndex: 10,
+              boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+            }}
+          >
+            {isSatellite ? "🛰️ 위성" : "🗺️ 일반"}
+          </button>
+
+          {/* 내 위치 버튼 */}
           {userPosition && (
             <button className="map-my-location-btn" onClick={handleGoToMyLocation} title="내 위치로 이동">
               📍
             </button>
           )}
+
+          {/* 범례 */}
           <div className="map-legend">
             <div className="map-legend-item">
               <span className="map-legend-dot visited" />방문 완료
