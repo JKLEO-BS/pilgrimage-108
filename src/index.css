@@ -40,12 +40,22 @@ input  { font-family: var(--font); }
    새 앱 레이아웃
 ══════════════════════════════════════ */
 
+/* PC 배경 */
+body {
+  background: #2D4A3E !important;
+}
+
 .app-container {
   display: flex;
   flex-direction: column;
   height: 100dvh;
   overflow: hidden;
   background: var(--beige);
+
+  /* PC에서 모바일처럼 보이게 */
+  max-width: 480px;
+  margin: 0 auto;
+  box-shadow: 0 0 40px rgba(0,0,0,0.4);
 }
 
 /* 오프라인 배너 */
