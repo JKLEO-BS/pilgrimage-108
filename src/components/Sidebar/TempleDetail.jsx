@@ -14,7 +14,7 @@ export default function TempleDetail({
 
   if (!temple) return null;
 
-  const withinRange = isWithinRadius(userPosition?.lat, userPosition?.lng, temple, 300);
+  const withinRange = isWithinRadius(userPosition?.lat, userPosition?.lng, temple, 500);
   const distanceMeters = userPosition
     ? getDistanceInMeters(userPosition.lat, userPosition.lng, temple.lat, temple.lng)
     : null;
