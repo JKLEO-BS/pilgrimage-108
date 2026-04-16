@@ -58,7 +58,6 @@ export default function App() {
       <header className="app-header-mini">
         <div className="app-header-mini-left">
           <span className="app-header-mini-title">108 사찰 순례</span>
-          <span className="app-header-mini-sub">불교 성지 순례</span>
         </div>
         <div className="app-header-mini-right">
           <div className="app-header-mini-prog-wrap">
