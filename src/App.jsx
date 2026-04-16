@@ -21,7 +21,7 @@ export default function App() {
 
   const [selectedTemple, setSelectedTemple] = useState(null);
   const [regionFilter, setRegionFilter] = useState("전체");
-  const [mainTab, setMainTab] = useState("map"); // "map" | "list"
+  const [mainTab, setMainTab] = useState("map"); // "map" | "detail"
 
   const stats = getStats(visitedIds);
 
@@ -31,66 +31,60 @@ export default function App() {
 
   const handleCloseDetail = () => {
     setSelectedTemple(null);
+    setMainTab("map");
   };
 
   return (
     <div className="app-container">
       {isOffline && (
         <div className="offline-banner" role="alert">
-          📵 오프라인 상태 — 캐시된 지도와 순례 기록은 계속 이용 가능합니다
+          📵 오프라인 — 캐시된 지도와 순례 기록 이용 가능
         </div>
       )}
       <InstallPrompt />
 
-      {/* ── 상단 헤더 ── */}
-      <header className="app-header">
-        <div className="app-header-inner">
-          <div className="app-header-text">
-            <p className="header-eyebrow">불교 성지 순례</p>
-            <h1 className="header-title">108 사찰 순례</h1>
-          </div>
-          <div className="header-badge">
-            <span className="badge-num">{stats.visited}</span>
-            <span className="badge-label"> / {stats.total}</span>
-          </div>
+      {/* ── 초소형 헤더 ── */}
+      <header className="app-header-mini">
+        <div className="app-header-mini-left">
+          <span className="app-header-mini-title">108 사찰 순례</span>
+          <span className="app-header-mini-sub">불교 성지 순례</span>
         </div>
-        <div className="header-progress-row">
-          <div
-            className="header-prog-track"
-            role="progressbar"
-            aria-valuenow={stats.percent}
-            aria-valuemin={0}
-            aria-valuemax={100}
-          >
-            <div
-              className="header-prog-fill"
-              style={{ width: `${stats.percent}%` }}
-            />
+        <div className="app-header-mini-right">
+          <div className="app-header-mini-prog-wrap">
+            <div className="app-header-mini-prog-track">
+              <div
+                className="app-header-mini-prog-fill"
+                style={{ width: `${stats.percent}%` }}
+              />
+            </div>
+            <span className="app-header-mini-stat">
+              {stats.visited} / {stats.total}
+            </span>
           </div>
-          <span className="header-prog-pct">{stats.percent}%</span>
         </div>
       </header>
 
-      {/* ── 지도 / 목록 탭 바 ── */}
+      {/* ── 탭 바 ── */}
       <nav className="main-tab-bar">
         <button
           className={`main-tab-btn ${mainTab === "map" ? "active" : ""}`}
           onClick={() => setMainTab("map")}
         >
-          🗺️ 지도
+          🗺️ 지도·목록
         </button>
         <button
-          className={`main-tab-btn ${mainTab === "list" ? "active" : ""}`}
-          onClick={() => setMainTab("list")}
+          className={`main-tab-btn ${mainTab === "detail" ? "active" : ""}`}
+          onClick={() => selectedTemple && setMainTab("detail")}
+          disabled={!selectedTemple}
         >
-          📋 목록
+          🏯 사찰정보 {selectedTemple ? `· ${selectedTemple.name}` : ""}
         </button>
       </nav>
 
-      {/* ── GPS 상태 (오류/로딩 시만 표시) ── */}
+      {/* ── GPS 오류/로딩 ── */}
       {(gpsLoading || gpsError) && (
         <div className="gps-status-bar">
-          {gpsLoading && <span className="gps-loading">📡 위치 확인 중...</span>}
+          {gpsLoading && <span>📡 위치 확인 중...</span>}
           {gpsError && (
             <>
               <span>⚠️ {gpsError}</span>
@@ -102,39 +96,39 @@ export default function App() {
 
       {/* ── 메인 콘텐츠 ── */}
       <div className="main-content">
-        {/* 지도 탭 */}
-        <div className={`tab-panel ${mainTab === "map" ? "tab-active" : ""}`}>
-          <TempleMap
-            temples={temples}
-            visitedIds={visitedIds}
-            selectedTemple={selectedTemple}
-            onSelectTemple={handleSelectTemple}
-            userPosition={userPosition}
-            regionFilter={regionFilter}
-          />
+
+        {/* 지도·목록 탭: 좌우 분할 */}
+        <div className={`tab-panel split-view ${mainTab === "map" ? "tab-active" : ""}`}>
+          {/* 왼쪽: 사찰 목록 */}
+          <div className="split-list">
+            <TempleList
+              temples={temples}
+              visitedIds={visitedIds}
+              selectedTemple={selectedTemple}
+              onSelectTemple={(temple) => {
+                handleSelectTemple(temple);
+              }}
+              regionFilter={regionFilter}
+              onRegionChange={setRegionFilter}
+            />
+          </div>
+
+          {/* 오른쪽: 지도 */}
+          <div className="split-map">
+            <TempleMap
+              temples={temples}
+              visitedIds={visitedIds}
+              selectedTemple={selectedTemple}
+              onSelectTemple={handleSelectTemple}
+              userPosition={userPosition}
+              regionFilter={regionFilter}
+            />
+          </div>
         </div>
 
-        {/* 목록 탭 */}
-        <div className={`tab-panel ${mainTab === "list" ? "tab-active" : ""}`}>
-          <TempleList
-            temples={temples}
-            visitedIds={visitedIds}
-            selectedTemple={selectedTemple}
-            onSelectTemple={(temple) => {
-              handleSelectTemple(temple);
-              setMainTab("map"); // 목록에서 선택하면 지도로 전환
-            }}
-            regionFilter={regionFilter}
-            onRegionChange={setRegionFilter}
-          />
-        </div>
-      </div>
-
-      {/* ── 사찰 상세 슬라이드업 패널 ── */}
-      {selectedTemple && (
-        <div className="detail-overlay" onClick={handleCloseDetail}>
-          <div className="detail-sheet" onClick={(e) => e.stopPropagation()}>
-            <div className="detail-sheet-handle" />
+        {/* 사찰정보 탭: 단독 상세 */}
+        <div className={`tab-panel detail-only ${mainTab === "detail" ? "tab-active" : ""}`}>
+          {selectedTemple && (
             <TempleDetail
               temple={selectedTemple}
               visited={isVisited(selectedTemple.id)}
@@ -144,9 +138,10 @@ export default function App() {
               onUnvisit={unmarkVisited}
               onClose={handleCloseDetail}
             />
-          </div>
+          )}
         </div>
-      )}
+
+      </div>
     </div>
   );
 }
