@@ -1,73 +1,94 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect } from "react";
+import { db } from "../lib/firebase";
+import {
+  doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove
+} from "firebase/firestore";
 
-const STORAGE_KEY = "pilgrimage108_visited";
+const LOCAL_KEY = "visitedTemples";
 
-function loadFromStorage() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return {};
-    return JSON.parse(raw); // { [templeId]: { visitedAt: ISO string } }
-  } catch {
-    return {};
-  }
-}
+export function useVisitedTemples(userId = null) {
+  const [visitedIds, setVisitedIds] = useState([]);
+  const [visitedDates, setVisitedDates] = useState({});
 
-function saveToStorage(data) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  } catch {
-    console.warn("localStorage 저장 실패");
-  }
-}
+  useEffect(() => {
+    if (userId) {
+      // Firebase에서 불러오기
+      loadFromFirebase(userId);
+    } else {
+      // 로컬스토리지에서 불러오기
+      loadFromLocal();
+    }
+  }, [userId]);
 
-/**
- * 방문 기록을 localStorage에 저장·관리하는 훅
- */
-export function useVisitedTemples() {
-  const [visited, setVisited] = useState(loadFromStorage);
+  const loadFromLocal = () => {
+    try {
+      const raw = localStorage.getItem(LOCAL_KEY);
+      if (raw) {
+        const data = JSON.parse(raw);
+        setVisitedIds(data.ids || []);
+        setVisitedDates(data.dates || {});
+      }
+    } catch (e) {}
+  };
 
-  /** 사찰 방문 인증 */
-  const markVisited = useCallback((templeId) => {
-    setVisited((prev) => {
-      const next = {
-        ...prev,
-        [templeId]: { visitedAt: new Date().toISOString() },
-      };
-      saveToStorage(next);
-      return next;
-    });
-  }, []);
+  const saveToLocal = (ids, dates) => {
+    localStorage.setItem(LOCAL_KEY, JSON.stringify({ ids, dates }));
+  };
 
-  /** 방문 취소 (실수 방지용) */
-  const unmarkVisited = useCallback((templeId) => {
-    setVisited((prev) => {
-      const next = { ...prev };
-      delete next[templeId];
-      saveToStorage(next);
-      return next;
-    });
-  }, []);
+  const loadFromFirebase = async (uid) => {
+    try {
+      const ref = doc(db, "pilgrimages", uid);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        const data = snap.data();
+        setVisitedIds(data.visitedIds || []);
+        setVisitedDates(data.visitedDates || {});
+      }
+    } catch (e) {
+      console.error("Firebase 로드 실패:", e);
+      loadFromLocal();
+    }
+  };
 
-  /** 특정 사찰 방문 여부 확인 */
-  const isVisited = useCallback(
-    (templeId) => Boolean(visited[templeId]),
-    [visited]
-  );
+  const saveToFirebase = async (uid, ids, dates) => {
+    try {
+      const ref = doc(db, "pilgrimages", uid);
+      await setDoc(ref, { visitedIds: ids, visitedDates: dates }, { merge: true });
+    } catch (e) {
+      console.error("Firebase 저장 실패:", e);
+    }
+  };
 
-  /** 방문 날짜 반환 */
-  const getVisitedAt = useCallback(
-    (templeId) => visited[templeId]?.visitedAt ?? null,
-    [visited]
-  );
+  const markVisited = (templeId) => {
+    const date = new Date().toISOString();
+    const newIds = visitedIds.includes(templeId)
+      ? visitedIds
+      : [...visitedIds, templeId];
+    const newDates = { ...visitedDates, [templeId]: date };
+    setVisitedIds(newIds);
+    setVisitedDates(newDates);
+    if (userId) {
+      saveToFirebase(userId, newIds, newDates);
+    } else {
+      saveToLocal(newIds, newDates);
+    }
+  };
 
-  /** 방문한 사찰 id 배열 */
-  const visitedIds = Object.keys(visited).map(Number);
+  const unmarkVisited = (templeId) => {
+    const newIds = visitedIds.filter((id) => id !== templeId);
+    const newDates = { ...visitedDates };
+    delete newDates[templeId];
+    setVisitedIds(newIds);
+    setVisitedDates(newDates);
+    if (userId) {
+      saveToFirebase(userId, newIds, newDates);
+    } else {
+      saveToLocal(newIds, newDates);
+    }
+  };
 
-  /** 전체 초기화 */
-  const resetAll = useCallback(() => {
-    setVisited({});
-    localStorage.removeItem(STORAGE_KEY);
-  }, []);
+  const isVisited = (templeId) => visitedIds.includes(templeId);
+  const getVisitedAt = (templeId) => visitedDates[templeId] || null;
 
-  return { visited, visitedIds, markVisited, unmarkVisited, isVisited, getVisitedAt, resetAll };
+  return { visitedIds, markVisited, unmarkVisited, isVisited, getVisitedAt };
 }
