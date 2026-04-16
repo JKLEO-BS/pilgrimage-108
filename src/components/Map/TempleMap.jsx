@@ -2,8 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { getDistanceInMeters, formatDistance } from "../../utils/distance";
 
 const KAKAO_KEY = import.meta.env.VITE_KAKAO_MAP_KEY;
-
-// 주소 → 좌표 변환 캐시
 const geocodeCache = {};
 
 async function getCoordsByAddress(address) {
@@ -13,10 +11,7 @@ async function getCoordsByAddress(address) {
     const geocoder = new window.kakao.maps.services.Geocoder();
     geocoder.addressSearch(address, (result, status) => {
       if (status === window.kakao.maps.services.Status.OK && result[0]) {
-        const coords = {
-          lat: parseFloat(result[0].y),
-          lng: parseFloat(result[0].x),
-        };
+        const coords = { lat: parseFloat(result[0].y), lng: parseFloat(result[0].x) };
         geocodeCache[address] = coords;
         resolve(coords);
       } else {
@@ -24,6 +19,23 @@ async function getCoordsByAddress(address) {
       }
     });
   });
+}
+
+// 핀 모양 SVG 마커 생성
+function makeMarkerSvg(temple, visited, isSelected) {
+  const w = isSelected ? 44 : 32;
+  const h = isSelected ? 56 : 40;
+  const fill = visited ? "#D4AF37" : (isSelected ? "#2D4A3E" : "#8A8A7A");
+  const inner = visited
+    ? `<path d="M12 18 L15.5 21.5 L22 14" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`
+    : `<text x="16" y="20" text-anchor="middle" font-size="9" fill="white" font-weight="bold" font-family="sans-serif">${temple.id}</text>`;
+
+  return `<svg width="${w}" height="${h}" viewBox="0 0 32 40" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16 38 C16 38 3 24 3 14 A13 13 0 0 1 29 14 C29 24 16 38 16 38Z"
+      fill="${fill}" stroke="white" stroke-width="2"/>
+    <circle cx="16" cy="14" r="8" fill="rgba(255,255,255,0.2)"/>
+    ${inner}
+  </svg>`;
 }
 
 export default function TempleMap({
@@ -39,21 +51,23 @@ export default function TempleMap({
 
   // SDK 로드
   useEffect(() => {
-    if (!KAKAO_KEY) { setMapError("카카오맵 API 키가 없습니다."); setMapLoading(false); return; }
-
-    function init() {
-      if (window.kakao?.maps) { window.kakao.maps.load(initMap); return; }
-      const script = document.createElement("script");
-      script.id = "kakao-map-sdk";
-      script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_KEY}&autoload=false&libraries=services`;
-      script.onload = () => window.kakao?.maps ? window.kakao.maps.load(initMap) : setMapError("SDK 로드 실패");
-      script.onerror = () => setMapError("카카오맵 스크립트 로드 오류");
-      document.head.appendChild(script);
+    if (!KAKAO_KEY) {
+      setMapError("카카오맵 API 키가 없습니다.");
+      setMapLoading(false);
+      return;
     }
-
     const existing = document.getElementById("kakao-map-sdk");
-    if (existing) { existing.remove(); }
-    init();
+    if (existing) existing.remove();
+
+    const script = document.createElement("script");
+    script.id = "kakao-map-sdk";
+    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_KEY}&autoload=false&libraries=services`;
+    script.onload = () =>
+      window.kakao?.maps
+        ? window.kakao.maps.load(initMap)
+        : setMapError("SDK 로드 실패");
+    script.onerror = () => setMapError("카카오맵 스크립트 로드 오류");
+    document.head.appendChild(script);
   }, []);
 
   function initMap() {
@@ -65,7 +79,10 @@ export default function TempleMap({
         level: 7,
       });
       kakaoMapRef.current = map;
-      map.addControl(new window.kakao.maps.ZoomControl(), window.kakao.maps.ControlPosition.RIGHT);
+      map.addControl(
+        new window.kakao.maps.ZoomControl(),
+        window.kakao.maps.ControlPosition.RIGHT
+      );
       setMapLoading(false);
       renderMarkers();
     } catch (e) {
@@ -84,40 +101,34 @@ export default function TempleMap({
     markersRef.current = [];
     if (infoWindowRef.current) infoWindowRef.current.close();
 
-    const visible = regionFilter === "전체"
-      ? temples
-      : temples.filter((t) => t.region === regionFilter);
+    const visible =
+      regionFilter === "전체"
+        ? temples
+        : temples.filter((t) => t.region === regionFilter);
 
     for (const temple of visible) {
       const visited = visitedIds.includes(temple.id);
       const isSelected = selectedTemple?.id === temple.id;
 
-      // 좌표 결정: 저장된 좌표 우선, 없거나 부정확하면 주소로 변환
       let lat = temple.lat;
       let lng = temple.lng;
-
       if (temple.address && (!lat || !lng)) {
         const coords = await getCoordsByAddress(temple.address);
         if (coords) { lat = coords.lat; lng = coords.lng; }
       }
-
       if (!lat || !lng) continue;
 
-      const size = isSelected ? 38 : 28;
-      const fill = visited ? "#D4AF37" : "#8A8A7A";
-      const stroke = isSelected ? "#2D4A3E" : "#ffffff";
-      const svg = `<svg width="${size}" height="${size}" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="20" cy="20" r="18" fill="${fill}" stroke="${stroke}" stroke-width="${isSelected ? 3 : 2}"/>
-        <text x="20" y="26" text-anchor="middle" font-size="16">🪷</text>
-      </svg>`;
+      const w = isSelected ? 44 : 32;
+      const h = isSelected ? 56 : 40;
+      const svg = makeMarkerSvg(temple, visited, isSelected);
 
       const marker = new window.kakao.maps.Marker({
         map: kakaoMapRef.current,
         position: new window.kakao.maps.LatLng(lat, lng),
         image: new window.kakao.maps.MarkerImage(
           `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`,
-          new window.kakao.maps.Size(size, size),
-          { offset: new window.kakao.maps.Point(size / 2, size / 2) }
+          new window.kakao.maps.Size(w, h),
+          { offset: new window.kakao.maps.Point(w / 2, h) }
         ),
         title: temple.name,
         zIndex: isSelected ? 10 : visited ? 5 : 1,
@@ -130,10 +141,13 @@ export default function TempleMap({
           : null;
         const iw = new window.kakao.maps.InfoWindow({
           content: `<div style="padding:10px 12px;min-width:150px;font-family:'Nanum Gothic',sans-serif;">
-            <div style="font-size:11px;color:${visited ? "#708238" : "#8A8A7A"};margin-bottom:3px;">${visited ? "✅ 방문완료" : "○ 미방문"}${temple.UNESCO ? " 🌐" : ""}</div>
+            <div style="font-size:11px;color:${visited ? "#708238" : "#8A8A7A"};margin-bottom:3px;">
+              ${visited ? "✅ 방문완료" : "○ 미방문"}${temple.UNESCO ? " 🌐" : ""}
+            </div>
             <div style="font-size:14px;font-weight:800;color:#2D4A3E;">${temple.name}</div>
             <div style="font-size:11px;color:#8A7A72;">${temple.province}</div>
-            ${dist !== null ? `<div style="font-size:11px;color:#1565C0;">📡 ${formatDistance(dist)}</div>` : ""}
+            ${dist !== null ? `<div style="font-size:11px;color:#1565C0;margin-top:4px;">📡 ${formatDistance(dist)}</div>` : ""}
+            <div style="font-size:11px;color:#2D4A3E;margin-top:6px;cursor:pointer;font-weight:bold;">▶ 자세히 보기</div>
           </div>`,
           removable: true,
         });
@@ -145,8 +159,8 @@ export default function TempleMap({
       markersRef.current.push(marker);
     }
 
+    // 선택된 사찰로 지도 이동
     if (selectedTemple) {
-      // 선택된 사찰로 지도 이동
       let lat = selectedTemple.lat;
       let lng = selectedTemple.lng;
       if (selectedTemple.address && (!lat || !lng)) {
@@ -159,7 +173,7 @@ export default function TempleMap({
     }
   }
 
-  // 내 위치 마커
+  // 내 위치 마커 (파란 점)
   useEffect(() => {
     if (!window.kakao || !kakaoMapRef.current || !userPosition) return;
     if (userMarkerRef.current) userMarkerRef.current.setMap(null);
@@ -179,30 +193,60 @@ export default function TempleMap({
     });
   }, [userPosition]);
 
+  // 내 위치로 이동
+  const handleGoToMyLocation = () => {
+    if (kakaoMapRef.current && userPosition) {
+      kakaoMapRef.current.panTo(
+        new window.kakao.maps.LatLng(userPosition.lat, userPosition.lng)
+      );
+      kakaoMapRef.current.setLevel(4);
+    }
+  };
+
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
-      <div ref={mapRef} style={{ width: "100%", height: "100%", minHeight: "400px" }} />
+      <div ref={mapRef} style={{ width: "100%", height: "100%" }} />
+
+      {/* 로딩 */}
       {mapLoading && (
-        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "#EDE5DE", flexDirection: "column", gap: "12px" }}>
+        <div className="map-overlay-center">
           <div style={{ fontSize: "32px" }}>🗺️</div>
-          <div style={{ fontFamily: "'Nanum Gothic',sans-serif", fontSize: "14px", color: "#8A7A72" }}>지도 불러오는 중...</div>
+          <div style={{ fontSize: "14px", color: "#8A7A72" }}>지도 불러오는 중...</div>
         </div>
       )}
+
+      {/* 오류 */}
       {mapError && (
-        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "#EDE5DE", flexDirection: "column", gap: "12px", padding: "20px", textAlign: "center" }}>
+        <div className="map-overlay-center">
           <div style={{ fontSize: "32px" }}>⚠️</div>
-          <div style={{ fontFamily: "'Nanum Gothic',sans-serif", fontSize: "13px", color: "#A45A52", lineHeight: "1.6" }}>{mapError}</div>
+          <div style={{ fontSize: "13px", color: "#A45A52" }}>{mapError}</div>
         </div>
       )}
+
       {!mapLoading && !mapError && (
-        <div style={{ position: "absolute", bottom: "30px", right: "12px", background: "rgba(250,250,240,0.92)", border: "1px solid #D8D4C0", borderRadius: "8px", padding: "8px 12px", display: "flex", flexDirection: "column", gap: "5px", fontSize: "12px", zIndex: 10, fontFamily: "'Nanum Gothic',sans-serif" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "7px", color: "#5A4A3A" }}>
-            <span style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#D4AF37", display: "inline-block" }}></span>방문 완료
+        <>
+          {/* 내 위치로 이동 버튼 */}
+          {userPosition && (
+            <button className="map-my-location-btn" onClick={handleGoToMyLocation} title="내 위치로 이동">
+              📍
+            </button>
+          )}
+
+          {/* 범례 */}
+          <div className="map-legend">
+            <div className="map-legend-item">
+              <span className="map-legend-dot visited" />방문 완료
+            </div>
+            <div className="map-legend-item">
+              <span className="map-legend-dot unvisited" />미방문
+            </div>
+            {userPosition && (
+              <div className="map-legend-item">
+                <span className="map-legend-dot gps" />내 위치
+              </div>
+            )}
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "7px", color: "#5A4A3A" }}>
-            <span style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#8A8A7A", display: "inline-block" }}></span>미방문
-          </div>
-        </div>
+        </>
       )}
     </div>
   );
