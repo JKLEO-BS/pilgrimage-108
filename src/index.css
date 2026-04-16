@@ -549,3 +549,92 @@ body {
     padding-top: max(5px, env(safe-area-inset-top));
   }
 }
+
+/* ── 필터 바 ── */
+.filter-bar {
+  background: #fff;
+  border-bottom: 1px solid var(--gray-light);
+  flex-shrink: 0;
+}
+.filter-bar-row1 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px 4px;
+  overflow: hidden;
+}
+.filter-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.filter-search-icon {
+  position: absolute;
+  left: 7px;
+  font-size: 11px;
+}
+.filter-search-input {
+  width: 100px;
+  padding: 4px 22px 4px 24px;
+  border: 1px solid var(--gray-light);
+  border-radius: 12px;
+  background: var(--beige);
+  font-size: 11px;
+  color: var(--brown);
+  outline: none;
+  font-family: var(--font);
+}
+.filter-search-input:focus { border-color: var(--green); }
+.filter-search-clear {
+  position: absolute; right: 6px;
+  font-size: 10px; color: var(--gray);
+  background: none; border: none; cursor: pointer;
+}
+.filter-region-tabs {
+  display: flex;
+  gap: 3px;
+  overflow-x: auto;
+  flex: 1;
+}
+.filter-region-tabs::-webkit-scrollbar { display: none; }
+.filter-region-tab {
+  padding: 3px 7px;
+  font-size: 10px;
+  border-radius: 10px;
+  white-space: nowrap;
+  color: var(--gray);
+  border: 1px solid var(--gray-light);
+  flex-shrink: 0;
+  font-family: var(--font);
+  cursor: pointer;
+  background: none;
+  transition: var(--transition);
+}
+.filter-region-tab.active {
+  background: var(--green);
+  color: var(--beige);
+  border-color: var(--green);
+}
+.filter-bar-row2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 12px 6px;
+}
+.filter-visited-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--green-mid);
+  cursor: pointer;
+}
+.filter-visited-check {
+  accent-color: var(--green);
+  width: 13px; height: 13px;
+}
+.filter-count {
+  font-size: 11px;
+  color: var(--gray);
+}
