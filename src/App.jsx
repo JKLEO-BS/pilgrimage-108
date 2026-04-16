@@ -55,24 +55,20 @@ export default function App() {
       <InstallPrompt />
 
       {/* ── 헤더 ── */}
-      <header className="app-header-mini">
-        <div className="app-header-mini-left">
-          <span className="app-header-mini-title">108 사찰 순례</span>
-        </div>
-        <div className="app-header-mini-right">
-          <div className="app-header-mini-prog-wrap">
-            <div className="app-header-mini-prog-track">
-              <div
-                className="app-header-mini-prog-fill"
-                style={{ width: `${stats.percent}%` }}
-              />
-            </div>
-            <span className="app-header-mini-stat">
-              {stats.visited} / {stats.total}
-            </span>
-          </div>
-        </div>
-      </header>
+<header className="app-header-mini">
+  <div className="app-header-mini-row1">
+    <span className="app-header-mini-title">108 사찰 순례</span>
+  </div>
+  <div className="app-header-mini-row2">
+    <span className="app-header-mini-stat">{stats.visited} / {stats.total}</span>
+    <div className="app-header-mini-prog-track">
+      <div
+        className="app-header-mini-prog-fill"
+        style={{ width: `${stats.percent}%` }}
+      />
+    </div>
+  </div>
+</header>
 
       {/* ── 메인 탭 바 ── */}
       <nav className="main-tab-bar">
