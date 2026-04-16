@@ -1,3 +1,4 @@
+import { useAuth } from "./hooks/useAuth";
 import React, { useState } from "react";
 import temples, { getStats, REGIONS } from "./data/temples";
 import { useVisitedTemples } from "./hooks/useVisitedTemples";
@@ -10,8 +11,8 @@ import InstallPrompt from "./components/UI/InstallPrompt";
 import Home from "./pages/Home";
 
 export default function App() {
-  const { visitedIds, markVisited, unmarkVisited, isVisited, getVisitedAt } =
-    useVisitedTemples();
+const { visitedIds, markVisited, unmarkVisited, isVisited, getVisitedAt } =
+  useVisitedTemples(user?.id);
   const {
     position: userPosition,
     error: gpsError,
@@ -27,6 +28,7 @@ export default function App() {
   const [showVisitedOnly, setShowVisitedOnly] = useState(false);
   const [showHome, setShowHome] = useState(true);
 
+  const { user, loading: authLoading, loginWithKakao, logout } = useAuth();
   const stats = getStats(visitedIds);
 
   const filteredTemples = temples.filter((t) => {
