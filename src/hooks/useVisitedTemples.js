@@ -1,8 +1,4 @@
 import { useState, useEffect } from "react";
-import { db } from "../lib/firebase";
-import {
-  doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove
-} from "firebase/firestore";
 
 const LOCAL_KEY = "visitedTemples";
 
@@ -12,10 +8,8 @@ export function useVisitedTemples(userId = null) {
 
   useEffect(() => {
     if (userId) {
-      // Firebase에서 불러오기
       loadFromFirebase(userId);
     } else {
-      // 로컬스토리지에서 불러오기
       loadFromLocal();
     }
   }, [userId]);
@@ -37,12 +31,16 @@ export function useVisitedTemples(userId = null) {
 
   const loadFromFirebase = async (uid) => {
     try {
+      const { db } = await import("../lib/firebase");
+      const { doc, getDoc } = await import("firebase/firestore");
       const ref = doc(db, "pilgrimages", uid);
       const snap = await getDoc(ref);
       if (snap.exists()) {
         const data = snap.data();
         setVisitedIds(data.visitedIds || []);
         setVisitedDates(data.visitedDates || {});
+      } else {
+        loadFromLocal();
       }
     } catch (e) {
       console.error("Firebase 로드 실패:", e);
@@ -52,10 +50,13 @@ export function useVisitedTemples(userId = null) {
 
   const saveToFirebase = async (uid, ids, dates) => {
     try {
+      const { db } = await import("../lib/firebase");
+      const { doc, setDoc } = await import("firebase/firestore");
       const ref = doc(db, "pilgrimages", uid);
       await setDoc(ref, { visitedIds: ids, visitedDates: dates }, { merge: true });
     } catch (e) {
       console.error("Firebase 저장 실패:", e);
+      saveToLocal(ids, dates);
     }
   };
 
