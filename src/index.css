@@ -670,6 +670,7 @@ input  { font-family: var(--font); }
 .home-screen {
   width: 100%;
   flex: 1;
+  min-height: 0;
   background: #0a0f0c;
   display: flex;
   flex-direction: column;
@@ -685,11 +686,12 @@ input  { font-family: var(--font); }
   position: relative;
   z-index: 1;
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 24px 28px 16px;
+  justify-content: space-evenly;
+  padding: 16px 28px;
 }
 .home-lotus {
   margin-bottom: 14px;
