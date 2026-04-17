@@ -46,8 +46,18 @@ export function useAuth() {
         thumbnail: profile.kakao_account?.profile?.thumbnail_image_url || null,
       };
 
-      // Firebase 저장은 비동기로 별도 처리
-      saveUserToFirebase(userData);
+      try {
+        const { getDb } = await import("../lib/firebase");
+        const { doc, setDoc, getDoc } = await import("firebase/firestore");
+        const db = await getDb();
+        const userRef = doc(db, "users", userData.id);
+        const userSnap = await getDoc(userRef);
+        if (!userSnap.exists()) {
+          await setDoc(userRef, { ...userData, createdAt: new Date().toISOString() });
+        }
+      } catch (e) {
+        console.warn("Firebase 저장 실패 (로그인은 유지):", e);
+      }
 
       localStorage.setItem("kakao_user", JSON.stringify(userData));
       setUser(userData);
@@ -55,20 +65,6 @@ export function useAuth() {
     } catch (e) {
       console.error("카카오 로그인 실패:", e);
       return null;
-    }
-  };
-
-  const saveUserToFirebase = async (userData) => {
-    try {
-      const { db } = await import("../lib/firebase");
-      const { doc, setDoc, getDoc } = await import("firebase/firestore");
-      const userRef = doc(db, "users", userData.id);
-      const userSnap = await getDoc(userRef);
-      if (!userSnap.exists()) {
-        await setDoc(userRef, { ...userData, createdAt: new Date().toISOString() });
-      }
-    } catch (e) {
-      console.error("Firebase 유저 저장 실패:", e);
     }
   };
 
