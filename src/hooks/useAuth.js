@@ -46,19 +46,6 @@ export function useAuth() {
         thumbnail: profile.kakao_account?.profile?.thumbnail_image_url || null,
       };
 
-      try {
-        const { getDb } = await import("../lib/firebase");
-        const { doc, setDoc, getDoc } = await import("firebase/firestore");
-        const db = await getDb();
-        const userRef = doc(db, "users", userData.id);
-        const userSnap = await getDoc(userRef);
-        if (!userSnap.exists()) {
-          await setDoc(userRef, { ...userData, createdAt: new Date().toISOString() });
-        }
-      } catch (e) {
-        console.warn("Firebase 저장 실패 (로그인은 유지):", e);
-      }
-
       localStorage.setItem("kakao_user", JSON.stringify(userData));
       setUser(userData);
       return userData;
