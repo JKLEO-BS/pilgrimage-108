@@ -47,6 +47,7 @@ input  { font-family: var(--font); }
 
 
 .app-container {
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -668,9 +669,9 @@ input  { font-family: var(--font); }
    홈 화면
 ══════════════════════════════════════ */
 .home-screen {
-  width: 100%;
-  flex: 1;
-  min-height: 0;
+  position: absolute;
+  inset: 0;
+  z-index: 200;
   background: #0a0f0c;
   display: flex;
   flex-direction: column;
