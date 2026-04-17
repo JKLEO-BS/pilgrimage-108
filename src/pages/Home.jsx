@@ -1,3 +1,4 @@
+import React from "react";
 
 const LOTUS_SVG = `
 <svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
