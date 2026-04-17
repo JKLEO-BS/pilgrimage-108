@@ -1,4 +1,5 @@
 import React from "react";
+import { useAuth } from "../hooks/useAuth";
 
 const LOTUS_SVG = `
 <svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
@@ -66,43 +67,49 @@ const LOTUS_SVG = `
 
 export default function Home({ visitedCount, totalCount, onStart, onBrowse }) {
   const percent = totalCount > 0 ? Math.round((visitedCount / totalCount) * 100) : 0;
+  const { user, loginWithKakao, logout } = useAuth();
 
   return (
     <div className="home-screen">
       <div className="home-bg-glow" />
-
       <div className="home-content">
-        {/* 연꽃 */}
-        <div
-          className="home-lotus"
-          dangerouslySetInnerHTML={{ __html: LOTUS_SVG }}
-        />
 
-        {/* 부제 */}
+        <div className="home-lotus" dangerouslySetInnerHTML={{ __html: LOTUS_SVG }} />
+
         <p className="home-sub">마음의 정화</p>
-
-        {/* 타이틀 */}
         <h1 className="home-title">108 사찰 순례</h1>
-
-        {/* 영문 */}
         <p className="home-en">Pilgrimage 108</p>
 
-        {/* 진행률 카드 */}
+        {/* 진행률 */}
         <div className="home-progress-card">
           <div className="home-progress-top">
             <span className="home-progress-label">나의 순례 현황</span>
             <span className="home-progress-count">{visitedCount} / {totalCount}</span>
           </div>
           <div className="home-progress-track">
-            <div
-              className="home-progress-fill"
-              style={{ width: `${percent}%` }}
-            />
+            <div className="home-progress-fill" style={{ width: `${percent}%` }} />
           </div>
           <div className="home-progress-pct">{percent}% 완료</div>
         </div>
 
-        {/* 버튼 */}
+        {/* 로그인 상태 */}
+        {user ? (
+          <div className="home-user-bar">
+            {user.thumbnail && (
+              <img src={user.thumbnail} alt="프로필" className="home-user-thumb" />
+            )}
+            <span className="home-user-name">{user.nickname}님의 순례</span>
+            <button className="home-user-logout" onClick={logout}>로그아웃</button>
+          </div>
+        ) : (
+          <button className="home-btn-kakao" onClick={loginWithKakao}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{marginRight:"8px",verticalAlign:"middle"}}>
+              <path d="M12 3C6.477 3 2 6.477 2 10.5c0 2.567 1.522 4.83 3.84 6.18L4.5 21l4.74-2.52A11.3 11.3 0 0 0 12 18.5c5.523 0 10-3.477 10-7.5S17.523 3 12 3z" fill="#3A1D1D"/>
+            </svg>
+            카카오로 로그인 / 기록 동기화
+          </button>
+        )}
+
         <button className="home-btn-primary" onClick={onStart}>
           순례 시작하기
         </button>
