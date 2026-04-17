@@ -8,11 +8,7 @@ export default defineConfig({
     VitePWA({
       strategies: "generateSW",
       registerType: "autoUpdate",
-      includeAssets: [
-        "icons/*.png",
-        "icons/*.svg",
-        "fonts/*.woff2",
-      ],
+      includeAssets: ["icons/*.png", "icons/*.svg", "fonts/*.woff2"],
       manifest: {
         name: "108 사찰 순례 · Pilgrimage 108",
         short_name: "108 순례",
@@ -33,7 +29,6 @@ export default defineConfig({
           {
             name: "순례 지도 열기",
             short_name: "지도",
-            description: "108 사찰 지도로 바로 이동",
             url: "/",
             icons: [{ src: "icons/icon-192.png", sizes: "192x192" }],
           },
@@ -43,21 +38,9 @@ export default defineConfig({
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/[abc]\.tile\.openstreetmap\.org\/.*/i,
-            handler: "CacheFirst",
-            options: {
-              cacheName: "osm-tiles",
-              expiration: { maxEntries: 1000, maxAgeSeconds: 60 * 60 * 24 * 30 },
-              cacheableResponse: { statuses: [0, 200] },
-            },
-          },
-          {
             urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com\/.*/i,
             handler: "StaleWhileRevalidate",
-            options: {
-              cacheName: "google-fonts",
-              expiration: { maxAgeSeconds: 60 * 60 * 24 * 365 },
-            },
+            options: { cacheName: "google-fonts", expiration: { maxAgeSeconds: 60 * 60 * 24 * 365 } },
           },
           {
             urlPattern: /^https:\/\/.*/i,
@@ -74,15 +57,4 @@ export default defineConfig({
       devOptions: { enabled: false },
     }),
   ],
-  optimizeDeps: {
-    include: [
-      "firebase/app",
-      "firebase/firestore",
-    ],
-  },
-  build: {
-    commonjsOptions: {
-      include: [/firebase/, /node_modules/],
-    },
-  },
 });
