@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import temples, { getStats, REGIONS } from "./data/temples";
+import { useAuth } from "./hooks/useAuth";
 import { useVisitedTemples } from "./hooks/useVisitedTemples";
 import { useGeolocation } from "./hooks/useGeolocation";
 import { useOfflineStatus } from "./hooks/useOfflineStatus";
@@ -10,8 +11,9 @@ import InstallPrompt from "./components/UI/InstallPrompt";
 import Home from "./pages/Home";
 
 export default function App() {
+  const { user, loading: authLoading, loginWithKakao, logout } = useAuth();
   const { visitedIds, markVisited, unmarkVisited, isVisited, getVisitedAt } =
-    useVisitedTemples();
+    useVisitedTemples(user?.id);
   const {
     position: userPosition,
     error: gpsError,
@@ -54,6 +56,9 @@ export default function App() {
           totalCount={stats.total}
           onStart={() => { setShowHome(false); setMainTab("map"); }}
           onBrowse={() => { setShowHome(false); setMainTab("map"); }}
+          user={user}
+          loginWithKakao={loginWithKakao}
+          logout={logout}
         />
       ) : (
         <>
