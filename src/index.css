@@ -4,7 +4,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;700&display=swap');
 
-/* ── CSS 변수 ── */
 :root {
   --beige:       #F5F5DC;
   --beige-dark:  #EAE8CC;
@@ -24,7 +23,6 @@
   --transition:  0.2s ease;
 }
 
-/* ── 전역 리셋 ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: var(--font);
@@ -39,13 +37,6 @@ body {
 button { font-family: var(--font); cursor: pointer; border: none; background: none; }
 input  { font-family: var(--font); }
 
-/* ══════════════════════════════════════
-   새 앱 레이아웃
-══════════════════════════════════════ */
-
-/* PC 배경 */
-
-
 .app-container {
   position: relative;
   display: flex;
@@ -57,7 +48,7 @@ input  { font-family: var(--font); }
   background: var(--beige);
   box-shadow: 0 0 60px rgba(0,0,0,0.5);
 }
-/* 오프라인 배너 */
+
 .offline-banner {
   background: #5A3E28;
   color: #FFF;
@@ -67,7 +58,6 @@ input  { font-family: var(--font); }
   flex-shrink: 0;
 }
 
-/* ── 초소형 헤더 ── */
 .app-header-mini {
   display: flex;
   flex-direction: column;
@@ -124,7 +114,7 @@ input  { font-family: var(--font); }
   border-radius: 4px;
   transition: width 0.4s ease;
 }
-/* ── 탭 바 ── */
+
 .main-tab-bar {
   display: flex;
   background: #fff;
@@ -155,7 +145,6 @@ input  { font-family: var(--font); }
   cursor: default;
 }
 
-/* ── GPS 상태 바 ── */
 .gps-status-bar {
   background: #FFF8E1;
   border-bottom: 1px solid #FFE082;
@@ -177,7 +166,6 @@ input  { font-family: var(--font); }
   cursor: pointer;
 }
 
-/* ── 메인 콘텐츠 ── */
 .main-content {
   flex: 1;
   position: relative;
@@ -192,7 +180,6 @@ input  { font-family: var(--font); }
   display: flex;
 }
 
-/* ── 좌우 분할 뷰 ── */
 .split-view {
   flex-direction: row;
 }
@@ -215,14 +202,12 @@ input  { font-family: var(--font); }
   position: relative;
 }
 
-/* ── 사찰정보 단독 뷰 ── */
 .detail-only {
   flex-direction: column;
   overflow-y: auto;
   background: var(--beige-light);
 }
 
-/* ── 지도 유틸 ── */
 .map-overlay-center {
   position: absolute;
   inset: 0;
@@ -282,10 +267,6 @@ input  { font-family: var(--font); }
 .map-legend-dot.visited   { border: 2px solid var(--gold); background: transparent; }
 .map-legend-dot.unvisited { border: 2px solid rgba(212,175,55,0.4); background: transparent; }
 .map-legend-dot.gps       { background: #4A90D9; }
-
-/* ══════════════════════════════════════
-   사찰 목록 컴포넌트
-══════════════════════════════════════ */
 
 .temple-list-container { padding: 8px 0; }
 
@@ -399,10 +380,6 @@ input  { font-family: var(--font); }
   color: var(--gray); font-size: 12px;
 }
 
-/* ══════════════════════════════════════
-   사찰 상세 컴포넌트
-══════════════════════════════════════ */
-
 .detail-panel {
   padding: 14px 16px;
   position: relative;
@@ -485,6 +462,14 @@ input  { font-family: var(--font); }
   background: var(--beige-dark); color: var(--gray);
   cursor: not-allowed; border: 1px solid var(--gray-light);
 }
+.btn-visit.dimmed {
+  background: var(--beige-dark);
+  color: var(--gray);
+  border: 2px solid var(--gray-light);
+  cursor: not-allowed;
+  opacity: 0.55;
+  transition: opacity 0.4s ease, background 0.4s ease, color 0.4s ease;
+}
 .btn-unvisit {
   width: 100%; padding: 7px;
   font-size: 12px; color: var(--gray);
@@ -493,7 +478,6 @@ input  { font-family: var(--font); }
 }
 .btn-unvisit:hover { background: var(--beige-dark); }
 
-/* ── 사찰 상세 사진 ── */
 .detail-photo-skeleton {
   height: 140px;
   background: var(--beige-dark);
@@ -527,19 +511,16 @@ input  { font-family: var(--font); }
   font-family: var(--font);
 }
 
-/* ── GPS 관련 ── */
 .gps-loading { color: var(--gray); }
 .gps-ok { color: var(--green-mid); font-weight: 500; }
 .gps-error { display: flex; align-items: center; gap: 8px; color: #c0392b; }
 
-/* standalone 모드 노치 보정 */
 @media (display-mode: standalone) {
   .app-header-mini {
     padding-top: max(5px, env(safe-area-inset-top));
   }
 }
 
-/* ── 필터 바 ── */
 .filter-bar {
   background: #fff;
   border-bottom: 1px solid var(--gray-light);
@@ -628,27 +609,22 @@ input  { font-family: var(--font); }
   color: var(--gray);
   font-weight: 500;
 }
-/* ── 유네스코 표기 ── */
-.item-name-unesco {
-  color: #1565C0;
-}
+
+.item-name-unesco { color: #1565C0; }
 .item-unesco-badge {
   display: inline-block;
-  font-size: 8px;
-  color: #1565C0;
-  border: 1px solid #1565C0;
+  font-size: 9px;
+  color: #fff;
+  background: #1565C0;
   border-radius: 3px;
-  padding: 0px 3px;
-  margin-left: 4px;
+  padding: 1px 4px;
+  margin-left: 5px;
   vertical-align: middle;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.02em;
-  opacity: 0.8;
 }
-.temple-list-item.visited .item-name-unesco {
-  color: #0D47A1;
-}
-/* ── 유네스코 범례 ── */
+.temple-list-item.visited .item-name-unesco { color: #0D47A1; }
+
 .filter-bar-unesco-note {
   padding: 2px 14px 5px 16px;
   font-size: 11px;
@@ -665,12 +641,18 @@ input  { font-family: var(--font); }
   background: #1565C0;
   flex-shrink: 0;
 }
+
 /* ══════════════════════════════════════
    홈 화면
 ══════════════════════════════════════ */
 .home-screen {
-  position: absolute;
-  inset: 0;
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: 100dvh;
   z-index: 200;
   background: #0a0f0c;
   display: flex;
@@ -687,19 +669,15 @@ input  { font-family: var(--font); }
   position: relative;
   z-index: 1;
   flex: 1;
-  min-height: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-evenly;
-  padding: 16px 28px;
+  justify-content: center;
+  padding: 24px 28px 16px;
+  gap: 0;
 }
-.home-lotus {
-  margin-bottom: 14px;
-}
-.home-lotus svg {
-  display: block;
-}
+.home-lotus { margin-bottom: 14px; }
+.home-lotus svg { display: block; }
 .home-sub {
   font-size: 12px;
   color: #D4AF37;
@@ -826,7 +804,6 @@ input  { font-family: var(--font); }
   height: 28px;
   background: rgba(212,175,55,0.2);
 }
-/* ── 카카오 로그인 버튼 ── */
 .home-btn-kakao {
   width: 100%;
   padding: 13px;
@@ -845,8 +822,6 @@ input  { font-family: var(--font); }
   justify-content: center;
 }
 .home-btn-kakao:active { opacity: 0.85; }
-
-/* ── 로그인 유저 바 ── */
 .home-user-bar {
   width: 100%;
   display: flex;
