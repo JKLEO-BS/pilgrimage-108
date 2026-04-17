@@ -53,12 +53,15 @@ const { visitedIds, markVisited, unmarkVisited, isVisited, getVisitedAt } =
 
       {/* ── 홈 화면 ── */}
       {showHome ? (
-        <Home
-          visitedCount={stats.visited}
-          totalCount={stats.total}
-          onStart={() => { setShowHome(false); setMainTab("map"); }}
-          onBrowse={() => { setShowHome(false); setMainTab("map"); }}
-        />
+<Home
+  visitedCount={stats.visited}
+  totalCount={stats.total}
+  onStart={() => { setShowHome(false); setMainTab("map"); }}
+  onBrowse={() => { setShowHome(false); setMainTab("map"); }}
+  user={user}
+  loginWithKakao={loginWithKakao}
+  logout={logout}
+/>
       ) : (
         <>
           <InstallPrompt />
