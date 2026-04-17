@@ -1,5 +1,3 @@
-import { db } from "../lib/firebase";
-import { doc, setDoc, getDoc } from "firebase/firestore";
 import { useState, useEffect } from "react";
 
 const KAKAO_REST_KEY = import.meta.env.VITE_KAKAO_REST_KEY;
@@ -12,13 +10,13 @@ export function useAuth() {
   useEffect(() => {
     const saved = localStorage.getItem("kakao_user");
     if (saved) {
-      setUser(JSON.parse(saved));
+      try { setUser(JSON.parse(saved)); } catch (e) {}
     }
     setLoading(false);
   }, []);
 
   const loginWithKakao = () => {
-    const url = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+    const url = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_KEY}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code`;
     window.location.href = url;
   };
 
@@ -35,6 +33,7 @@ export function useAuth() {
         }),
       });
       const tokenData = await tokenRes.json();
+      if (!tokenData.access_token) return null;
 
       const profileRes = await fetch("https://kapi.kakao.com/v2/user/me", {
         headers: { Authorization: `Bearer ${tokenData.access_token}` },
@@ -47,15 +46,8 @@ export function useAuth() {
         thumbnail: profile.kakao_account?.profile?.thumbnail_image_url || null,
       };
 
-      // Firestore에 사용자 등록
-      const userRef = doc(db, "users", userData.id);
-      const userSnap = await getDoc(userRef);
-      if (!userSnap.exists()) {
-        await setDoc(userRef, {
-          ...userData,
-          createdAt: new Date().toISOString(),
-        });
-      }
+      // Firebase 저장은 비동기로 별도 처리
+      saveUserToFirebase(userData);
 
       localStorage.setItem("kakao_user", JSON.stringify(userData));
       setUser(userData);
@@ -63,6 +55,20 @@ export function useAuth() {
     } catch (e) {
       console.error("카카오 로그인 실패:", e);
       return null;
+    }
+  };
+
+  const saveUserToFirebase = async (userData) => {
+    try {
+      const { db } = await import("../lib/firebase");
+      const { doc, setDoc, getDoc } = await import("firebase/firestore");
+      const userRef = doc(db, "users", userData.id);
+      const userSnap = await getDoc(userRef);
+      if (!userSnap.exists()) {
+        await setDoc(userRef, { ...userData, createdAt: new Date().toISOString() });
+      }
+    } catch (e) {
+      console.error("Firebase 유저 저장 실패:", e);
     }
   };
 
