@@ -31,8 +31,9 @@ export function useVisitedTemples(userId = null) {
 
   const loadFromFirebase = async (uid) => {
     try {
-      const { db } = await import("../lib/firebase");
+      const { getDb } = await import("../lib/firebase");
       const { doc, getDoc } = await import("firebase/firestore");
+      const db = await getDb();
       const ref = doc(db, "pilgrimages", uid);
       const snap = await getDoc(ref);
       if (snap.exists()) {
@@ -50,8 +51,9 @@ export function useVisitedTemples(userId = null) {
 
   const saveToFirebase = async (uid, ids, dates) => {
     try {
-      const { db } = await import("../lib/firebase");
+      const { getDb } = await import("../lib/firebase");
       const { doc, setDoc } = await import("firebase/firestore");
+      const db = await getDb();
       const ref = doc(db, "pilgrimages", uid);
       await setDoc(ref, { visitedIds: ids, visitedDates: dates }, { merge: true });
     } catch (e) {
@@ -62,9 +64,7 @@ export function useVisitedTemples(userId = null) {
 
   const markVisited = (templeId) => {
     const date = new Date().toISOString();
-    const newIds = visitedIds.includes(templeId)
-      ? visitedIds
-      : [...visitedIds, templeId];
+    const newIds = visitedIds.includes(templeId) ? visitedIds : [...visitedIds, templeId];
     const newDates = { ...visitedDates, [templeId]: date };
     setVisitedIds(newIds);
     setVisitedDates(newDates);
