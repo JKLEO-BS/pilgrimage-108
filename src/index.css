@@ -32,6 +32,9 @@ body {
   color: var(--brown);
   height: 100dvh;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 button { font-family: var(--font); cursor: pointer; border: none; background: none; }
 input  { font-family: var(--font); }
