@@ -64,7 +64,7 @@ const LOTUS_SVG = `
 </svg>
 `;
 
-export default function Home({ visitedCount, totalCount, onStart, onBrowse }) {
+export default function Home({ visitedCount, totalCount, onStart, onBrowse, user, loginWithKakao, logout }) {
   const percent = totalCount > 0 ? Math.round((visitedCount / totalCount) * 100) : 0;
 
   return (
