@@ -89,6 +89,20 @@ export default function Home({ visitedCount, totalCount, onStart, onBrowse }) {
           <div className="home-progress-pct">{percent}% 완료</div>
         </div>
 
+        {user ? (
+  <div className="home-user-bar">
+    {user.thumbnail && (
+      <img src={user.thumbnail} alt="프로필" className="home-user-thumb" />
+    )}
+    <span className="home-user-name">{user.nickname}님의 순례</span>
+    <button className="home-user-logout" onClick={logout}>로그아웃</button>
+  </div>
+) : (
+  <button className="home-btn-kakao" onClick={loginWithKakao}>
+    카카오로 로그인 / 기록 동기화
+  </button>
+)}
+        
         <button className="home-btn-primary" onClick={onStart}>
           순례 시작하기
         </button>
