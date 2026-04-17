@@ -34,6 +34,7 @@ body {
   overflow: hidden;
   display: flex;
   justify-content: center;
+  align-items: flex-start;
 }
 button { font-family: var(--font); cursor: pointer; border: none; background: none; }
 input  { font-family: var(--font); }
@@ -48,14 +49,13 @@ input  { font-family: var(--font); }
 .app-container {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 430px;
   height: 100dvh;
   overflow: hidden;
   background: var(--beige);
-  width: 100%;
-  max-width: 430px;
   box-shadow: 0 0 60px rgba(0,0,0,0.5);
 }
-
 /* 오프라인 배너 */
 .offline-banner {
   background: #5A3E28;
@@ -669,7 +669,7 @@ input  { font-family: var(--font); }
 ══════════════════════════════════════ */
 .home-screen {
   width: 100%;
-  flex: 1;
+  height: 100dvh;
   background: #0a0f0c;
   display: flex;
   flex-direction: column;
