@@ -1,4 +1,3 @@
-import { useAuth } from "../hooks/useAuth";
 
 const LOTUS_SVG = `
 <svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
@@ -64,9 +63,8 @@ const LOTUS_SVG = `
 </svg>
 `;
 
-export default function Home({ visitedCount, totalCount, onStart, onBrowse }) {
+export default function Home({ visitedCount, totalCount, onStart, onBrowse, user, loginWithKakao, logout }) {
   const percent = totalCount > 0 ? Math.round((visitedCount / totalCount) * 100) : 0;
-  const { user, loginWithKakao, logout } = useAuth();
 
   return (
     <div className="home-screen">
