@@ -43,9 +43,7 @@ input  { font-family: var(--font); }
 ══════════════════════════════════════ */
 
 /* PC 배경 */
-body {
-  background: #2D4A3E !important;
-}
+
 
 .app-container {
   display: flex;
