@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
 import { db } from "../lib/firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
+import { useState, useEffect } from "react";
 
 const KAKAO_REST_KEY = import.meta.env.VITE_KAKAO_REST_KEY;
 const REDIRECT_URI = "https://pilgrimage-108.vercel.app/auth/kakao/callback";
