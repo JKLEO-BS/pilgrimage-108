@@ -69,7 +69,7 @@ export default function App() {
             </div>
           )}
           <header className="app-header-mini">
-            <div className="app-header-mini-row1">
+            <div className="app-header-mini-row1" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <span className="app-header-mini-title">108 사찰 순례</span>
 
               {/* 홈 버튼 — 헤더 우측 */}
