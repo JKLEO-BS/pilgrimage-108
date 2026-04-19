@@ -71,6 +71,38 @@ export default function App() {
           <header className="app-header-mini">
             <div className="app-header-mini-row1">
               <span className="app-header-mini-title">108 사찰 순례</span>
+
+              {/* 홈 버튼 — 헤더 우측 */}
+              <button
+                onClick={() => setShowHome(true)}
+                title="홈으로"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "32px",
+                  height: "32px",
+                  background: "rgba(255,255,255,0.07)",
+                  border: "1px solid rgba(212,175,55,0.3)",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  flexShrink: 0,
+                  transition: "background 0.18s, border-color 0.18s",
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = "rgba(212,175,55,0.15)";
+                  e.currentTarget.style.borderColor = "rgba(212,175,55,0.7)";
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = "rgba(255,255,255,0.07)";
+                  e.currentTarget.style.borderColor = "rgba(212,175,55,0.3)";
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 10.5L12 3L21 10.5V21H15V15H9V21H3V10.5Z"
+                    stroke="#D4AF37" strokeWidth="1.8" strokeLinejoin="round" fill="none"/>
+                </svg>
+              </button>
             </div>
             <div className="app-header-mini-row2">
               <span className="app-header-mini-stat">{stats.visited} / {stats.total}</span>
