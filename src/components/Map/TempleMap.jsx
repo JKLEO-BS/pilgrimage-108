@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getDistanceInMeters, formatDistance } from "../../utils/distance";
 
 const KAKAO_KEY = import.meta.env.VITE_KAKAO_MAP_KEY;
@@ -34,12 +35,13 @@ function makeMarkerSvg(temple, visited, isSelected) {
 export default function TempleMap({
   temples, visitedIds, selectedTemple, onSelectTemple, userPosition, regionFilter = "전체",
 }) {
+  const navigate = useNavigate();
   const mapRef = useRef(null);
   const kakaoMapRef = useRef(null);
   const markersRef = useRef([]);
   const infoWindowRef = useRef(null);
   const userMarkerRef = useRef(null);
-  const prevSelectedIdRef = useRef(null); // 자동이동 버그 방지
+  const prevSelectedIdRef = useRef(null);
   const [mapError, setMapError] = useState(null);
   const [mapLoading, setMapLoading] = useState(true);
   const [isSatellite, setIsSatellite] = useState(false);
@@ -139,7 +141,6 @@ export default function TempleMap({
       markersRef.current.push(marker);
     }
 
-    // ✅ 선택된 사찰이 바뀔 때만 이동 (자동복귀 버그 수정)
     if (selectedTemple && selectedTemple.id !== prevSelectedIdRef.current) {
       prevSelectedIdRef.current = selectedTemple.id;
       let lat = selectedTemple.lat;
@@ -154,7 +155,6 @@ export default function TempleMap({
     }
   }
 
-  // 내 위치 마커
   useEffect(() => {
     if (!window.kakao || !kakaoMapRef.current || !userPosition) return;
     if (userMarkerRef.current) userMarkerRef.current.setMap(null);
@@ -181,7 +181,6 @@ export default function TempleMap({
     }
   };
 
-  // ✅ 위성지도 토글
   const handleToggleSatellite = () => {
     if (!kakaoMapRef.current || !window.kakao) return;
     if (isSatellite) {
@@ -211,7 +210,7 @@ export default function TempleMap({
 
       {!mapLoading && !mapError && (
         <>
-          {/* 위성지도 토글 버튼 */}
+          {/* 위성지도 토글 버튼 — 좌측 상단 */}
           <button
             onClick={handleToggleSatellite}
             style={{
@@ -228,19 +227,51 @@ export default function TempleMap({
             {isSatellite ? "🛰️ 위성" : "🗺️ 일반"}
           </button>
 
+          {/* 홈 버튼 — 우측 상단 */}
+          <button
+            onClick={() => navigate("/")}
+            title="홈으로"
+            style={{
+              position: "absolute", top: "10px", right: "10px",
+              width: "36px", height: "36px",
+              background: "rgba(22, 38, 28, 0.82)",
+              border: "1px solid rgba(212, 175, 55, 0.35)",
+              borderRadius: "8px",
+              cursor: "pointer", zIndex: 10,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.35)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              backdropFilter: "blur(4px)",
+              transition: "background 0.18s, border-color 0.18s",
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = "rgba(45, 74, 62, 0.95)";
+              e.currentTarget.style.borderColor = "rgba(212, 175, 55, 0.7)";
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = "rgba(22, 38, 28, 0.82)";
+              e.currentTarget.style.borderColor = "rgba(212, 175, 55, 0.35)";
+            }}
+          >
+            {/* 심플 홈 아이콘 SVG */}
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 10.5L12 3L21 10.5V21H15V15H9V21H3V10.5Z"
+                stroke="#D4AF37" strokeWidth="1.8" strokeLinejoin="round" fill="none"/>
+            </svg>
+          </button>
+
           {/* 내 위치 버튼 */}
           {userPosition && (
-<button className="map-my-location-btn" onClick={handleGoToMyLocation} title="내 위치로 이동">
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="12" cy="12" r="10" fill="white"/>
-    <circle cx="12" cy="12" r="6" stroke="#2D4A3E" strokeWidth="2" fill="none"/>
-    <circle cx="12" cy="12" r="1.5" fill="#2D4A3E"/>
-    <line x1="12" y1="2" x2="12" y2="5.5" stroke="#2D4A3E" strokeWidth="2" strokeLinecap="round"/>
-    <line x1="12" y1="18.5" x2="12" y2="22" stroke="#2D4A3E" strokeWidth="2" strokeLinecap="round"/>
-    <line x1="2" y1="12" x2="5.5" y2="12" stroke="#2D4A3E" strokeWidth="2" strokeLinecap="round"/>
-    <line x1="18.5" y1="12" x2="22" y2="12" stroke="#2D4A3E" strokeWidth="2" strokeLinecap="round"/>
-  </svg>
-</button>
+            <button className="map-my-location-btn" onClick={handleGoToMyLocation} title="내 위치로 이동">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" fill="white"/>
+                <circle cx="12" cy="12" r="6" stroke="#2D4A3E" strokeWidth="2" fill="none"/>
+                <circle cx="12" cy="12" r="1.5" fill="#2D4A3E"/>
+                <line x1="12" y1="2" x2="12" y2="5.5" stroke="#2D4A3E" strokeWidth="2" strokeLinecap="round"/>
+                <line x1="12" y1="18.5" x2="12" y2="22" stroke="#2D4A3E" strokeWidth="2" strokeLinecap="round"/>
+                <line x1="2" y1="12" x2="5.5" y2="12" stroke="#2D4A3E" strokeWidth="2" strokeLinecap="round"/>
+                <line x1="18.5" y1="12" x2="22" y2="12" stroke="#2D4A3E" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </button>
           )}
 
           {/* 범례 */}
