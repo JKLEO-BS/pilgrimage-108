@@ -39,7 +39,7 @@ export default function DiaryTab({
       <div className="diary-panel" style={{ position: "relative", overflow: "hidden" }}>
 
         {/* 흐린 배경 — 실제 작성 화면 미리보기 */}
-        <div style={{ filter: "blur(3px)", opacity: 0.35, pointerEvents: "none", userSelect: "none" }}>
+        <div style={{ filter: "blur(2px)", opacity: 0.6, pointerEvents: "none", userSelect: "none" }}>
           <div className="diary-temple-header">
             <div className="diary-temple-name">{selectedTemple.name}</div>
             <div className="diary-temple-meta">{selectedTemple.province}</div>
@@ -64,14 +64,26 @@ export default function DiaryTab({
 
         {/* 오버레이 */}
         <div className="diary-lock-overlay">
-          <div className="diary-locked-icon">🔒</div>
-          <p className="diary-locked-title">방문 인증 후 작성 가능</p>
-          <p className="diary-locked-desc">
-            사찰을 직접 방문하고<br />방문 인증을 완료하면<br />일기를 작성할 수 있습니다
-          </p>
-          <button className="diary-go-detail-btn" onClick={onGoToDetail}>
-            사찰정보에서 방문 인증 →
-          </button>
+          <div style={{
+            background: "rgba(245,245,220,0.96)",
+            border: "1px solid rgba(212,175,55,0.3)",
+            borderRadius: "16px",
+            padding: "28px 24px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "10px",
+            boxShadow: "0 4px 24px rgba(45,74,62,0.15)",
+          }}>
+            <div className="diary-locked-icon">🔒</div>
+            <p className="diary-locked-title">방문 인증 후 작성 가능</p>
+            <p className="diary-locked-desc">
+              사찰을 직접 방문하고<br />방문 인증을 완료하면<br />일기를 작성할 수 있습니다
+            </p>
+            <button className="diary-go-detail-btn" onClick={onGoToDetail}>
+              사찰정보에서 방문 인증 →
+            </button>
+          </div>
         </div>
 
       </div>
