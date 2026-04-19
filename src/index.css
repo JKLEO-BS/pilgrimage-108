@@ -886,3 +886,273 @@ input  { font-family: var(--font); }
   font-family: var(--font);
   padding: 0;
 }
+
+/* ══════════════════════════════════════
+   방문 일기 탭
+══════════════════════════════════════ */
+.diary-panel {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  overflow-y: auto;
+}
+.diary-panel::-webkit-scrollbar { width: 4px; }
+.diary-panel::-webkit-scrollbar-thumb { background: var(--gray-light); border-radius: 4px; }
+
+/* 사찰 헤더 */
+.diary-temple-header {
+  border-bottom: 1px solid var(--gray-light);
+  padding-bottom: 10px;
+}
+.diary-temple-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 4px;
+}
+.diary-temple-meta {
+  font-size: 12px;
+  color: var(--gray);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.diary-visited-badge {
+  color: var(--green);
+  font-weight: 600;
+}
+.diary-visit-date {
+  color: var(--gray);
+}
+
+/* 비로그인 안내 */
+.diary-login-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #FFF8E1;
+  border: 1px solid #FFE082;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--brown);
+  gap: 8px;
+}
+.diary-login-btn {
+  background: #FEE500;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #3A1D1D;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: var(--font);
+}
+
+/* 작성 섹션 */
+.diary-write-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.diary-write-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--green);
+}
+.diary-textarea {
+  width: 100%;
+  border: 1px solid var(--gray-light);
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 13px;
+  font-family: var(--font);
+  color: var(--brown);
+  background: var(--beige-light);
+  resize: none;
+  outline: none;
+  line-height: 1.7;
+  transition: border-color var(--transition);
+}
+.diary-textarea:focus {
+  border-color: var(--green);
+}
+.diary-write-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.diary-char-count {
+  font-size: 11px;
+  color: var(--gray);
+}
+.diary-save-btn {
+  background: var(--green);
+  color: var(--gold-light);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: background var(--transition);
+}
+.diary-save-btn:hover { background: var(--green-mid); }
+.diary-save-btn.disabled {
+  background: var(--gray-light);
+  color: var(--gray);
+  cursor: not-allowed;
+}
+
+/* 이전 기록 */
+.diary-entries-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.diary-entries-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--green);
+}
+.diary-entries-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.diary-entry-card {
+  background: var(--beige-light);
+  border: 1px solid var(--gray-light);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.diary-entry-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.diary-entry-date {
+  font-size: 11px;
+  color: var(--gray);
+  font-weight: 600;
+}
+.diary-entry-delete {
+  font-size: 11px;
+  color: var(--gray-light);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color var(--transition);
+}
+.diary-entry-delete:hover { color: #c0392b; }
+.diary-entry-text {
+  font-size: 13px;
+  color: var(--brown);
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* 삭제 확인 */
+.diary-delete-confirm {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--gray);
+}
+.diary-delete-yes {
+  background: #c0392b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: var(--font);
+}
+.diary-delete-no {
+  background: var(--gray-light);
+  color: var(--brown);
+  border: none;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: var(--font);
+}
+
+/* 기록 없음 */
+.diary-no-entries {
+  text-align: center;
+  font-size: 13px;
+  color: var(--gray);
+  line-height: 1.8;
+  padding: 12px 0;
+}
+
+/* 빈 상태 (사찰 미선택) */
+.diary-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 12px;
+  padding: 32px;
+  text-align: center;
+}
+.diary-empty-icon { font-size: 40px; }
+.diary-empty-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--green);
+}
+.diary-empty-desc {
+  font-size: 13px;
+  color: var(--gray);
+  line-height: 1.7;
+}
+
+/* 잠금 상태 (미방문) */
+.diary-locked {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 28px 16px;
+  text-align: center;
+}
+.diary-locked-icon { font-size: 36px; }
+.diary-locked-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--brown);
+}
+.diary-locked-desc {
+  font-size: 13px;
+  color: var(--gray);
+  line-height: 1.7;
+}
+.diary-go-detail-btn {
+  margin-top: 6px;
+  background: var(--green);
+  color: var(--gold-light);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font);
+}
+.diary-go-detail-btn:hover { background: var(--green-mid); }
