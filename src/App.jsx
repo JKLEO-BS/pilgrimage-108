@@ -31,6 +31,7 @@ export default function App() {
   const [mainTab, setMainTab] = useState("map");
   const [searchQuery, setSearchQuery] = useState("");
   const [showVisitedOnly, setShowVisitedOnly] = useState(false);
+  const [showUnvisitedOnly, setShowUnvisitedOnly] = useState(false);
   const [showHome, setShowHome] = useState(true);
 
   const stats = getStats(visitedIds);
@@ -38,12 +39,13 @@ export default function App() {
   const filteredTemples = temples.filter((t) => {
     const matchRegion = regionFilter === "전체" || t.region === regionFilter;
     const matchVisited = !showVisitedOnly || visitedIds.includes(t.id);
+    const matchUnvisited = !showUnvisitedOnly || !visitedIds.includes(t.id);
     const matchSearch =
       !searchQuery ||
       t.name.includes(searchQuery) ||
       t.province.includes(searchQuery) ||
       (t.nameEn && t.nameEn.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchRegion && matchVisited && matchSearch;
+    return matchRegion && matchVisited && matchUnvisited && matchSearch;
   });
 
   const handleSelectTemple = (temple) => setSelectedTemple(temple);
@@ -160,18 +162,31 @@ export default function App() {
                 ))}
               </div>
             </div>
-            <div className="filter-bar-row2">
-              <label className="filter-visited-label">
-                <input
-                  type="checkbox"
-                  checked={showVisitedOnly}
-                  onChange={(e) => setShowVisitedOnly(e.target.checked)}
-                  className="filter-visited-check"
-                />
-                <span>방문 완료만 보기</span>
-              </label>
-              <span className="filter-count">{filteredTemples.length}곳</span>
-            </div>
+            {mainTab === "map" && (
+              <div className="filter-bar-row2">
+                <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                  <label className="filter-visited-label">
+                    <input
+                      type="checkbox"
+                      checked={showVisitedOnly}
+                      onChange={(e) => { setShowVisitedOnly(e.target.checked); if (e.target.checked) setShowUnvisitedOnly(false); }}
+                      className="filter-visited-check"
+                    />
+                    <span>완료만 보기</span>
+                  </label>
+                  <label className="filter-visited-label">
+                    <input
+                      type="checkbox"
+                      checked={showUnvisitedOnly}
+                      onChange={(e) => { setShowUnvisitedOnly(e.target.checked); if (e.target.checked) setShowVisitedOnly(false); }}
+                      className="filter-visited-check"
+                    />
+                    <span>미완료만 보기</span>
+                  </label>
+                </div>
+                <span className="filter-count">{filteredTemples.length}곳</span>
+              </div>
+            )}
             {mainTab === "map" && (
               <div className="filter-bar-unesco-note">
                 <span style={{ color: "#1565C0", fontWeight: "600" }}>파란색 사찰명</span>
