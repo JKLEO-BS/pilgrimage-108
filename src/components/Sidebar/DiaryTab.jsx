@@ -33,15 +33,37 @@ export default function DiaryTab({
     );
   }
 
-  // 미방문 사찰
+  // 미방문 사찰 — 배경 흐림 + 오버레이
   if (!visited) {
     return (
-      <div className="diary-panel">
-        <div className="diary-temple-header">
-          <div className="diary-temple-name">{selectedTemple.name}</div>
-          <div className="diary-temple-meta">{selectedTemple.province}</div>
+      <div className="diary-panel" style={{ position: "relative", overflow: "hidden" }}>
+
+        {/* 흐린 배경 — 실제 작성 화면 미리보기 */}
+        <div style={{ filter: "blur(3px)", opacity: 0.35, pointerEvents: "none", userSelect: "none" }}>
+          <div className="diary-temple-header">
+            <div className="diary-temple-name">{selectedTemple.name}</div>
+            <div className="diary-temple-meta">{selectedTemple.province}</div>
+          </div>
+          <div className="diary-write-section" style={{ marginTop: "14px" }}>
+            <div className="diary-write-label">✍️ 오늘의 순례 기록</div>
+            <textarea
+              className="diary-textarea"
+              defaultValue=""
+              rows={5}
+              readOnly
+            />
+            <div className="diary-write-footer">
+              <span className="diary-char-count">0 / 1000</span>
+              <button className="diary-save-btn disabled">저장하기</button>
+            </div>
+          </div>
+          <div className="diary-no-entries" style={{ marginTop: "14px" }}>
+            아직 작성된 기록이 없습니다.<br />첫 번째 순례 일기를 남겨보세요 🪷
+          </div>
         </div>
-        <div className="diary-locked">
+
+        {/* 오버레이 */}
+        <div className="diary-lock-overlay">
           <div className="diary-locked-icon">🔒</div>
           <p className="diary-locked-title">방문 인증 후 작성 가능</p>
           <p className="diary-locked-desc">
@@ -51,6 +73,7 @@ export default function DiaryTab({
             사찰정보에서 방문 인증 →
           </button>
         </div>
+
       </div>
     );
   }
