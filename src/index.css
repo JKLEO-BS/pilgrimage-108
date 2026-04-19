@@ -1138,8 +1138,7 @@ input  { font-family: var(--font); }
   gap: 10px;
   padding: 28px 24px;
   text-align: center;
-  background: rgba(245, 245, 220, 0.55);
-  backdrop-filter: blur(1px);
+  background: transparent;
 }
 
 /* 잠금 상태 (미방문) */
