@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { getDistanceInMeters, formatDistance } from "../../utils/distance";
 
 const KAKAO_KEY = import.meta.env.VITE_KAKAO_MAP_KEY;
@@ -35,7 +34,6 @@ function makeMarkerSvg(temple, visited, isSelected) {
 export default function TempleMap({
   temples, visitedIds, selectedTemple, onSelectTemple, userPosition, regionFilter = "전체",
 }) {
-  const navigate = useNavigate();
   const mapRef = useRef(null);
   const kakaoMapRef = useRef(null);
   const markersRef = useRef([]);
@@ -229,7 +227,7 @@ export default function TempleMap({
 
           {/* 홈 버튼 — 우측 상단 */}
           <button
-            onClick={() => navigate("/")}
+            onClick={() => { window.location.href = "/"; }}
             title="홈으로"
             style={{
               position: "absolute", top: "10px", right: "10px",
