@@ -23,6 +23,13 @@
   --transition:  0.2s ease;
 }
 
+/* ✅ 핵심 모바일 좌우 넘침 방지 */
+html {
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
+}
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: var(--font);
@@ -30,6 +37,8 @@ body {
   color: var(--brown);
   height: 100dvh;
   overflow: hidden;
+  overflow-x: hidden;   /* ✅ 추가 */
+  max-width: 100vw;     /* ✅ 추가 */
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -45,6 +54,7 @@ input  { font-family: var(--font); }
   max-width: 430px;
   height: 100dvh;
   overflow: hidden;
+  overflow-x: hidden;   /* ✅ 추가 */
   background: var(--beige);
   box-shadow: 0 0 60px rgba(0,0,0,0.5);
 }
@@ -81,6 +91,9 @@ input  { font-family: var(--font); }
   position: relative;
   z-index: 1;
   margin-bottom: 1px;
+  display: flex;                /* ✅ 이미 App.jsx에 인라인으로 있지만 CSS에도 명시 */
+  align-items: center;
+  justify-content: space-between;
 }
 .app-header-mini-row2 {
   position: relative;
@@ -200,6 +213,7 @@ input  { font-family: var(--font); }
   flex: 1;
   height: 100%;
   position: relative;
+  overflow: hidden;  /* ✅ 추가 */
 }
 
 .detail-only {
@@ -521,10 +535,26 @@ input  { font-family: var(--font); }
   }
 }
 
+/* ✅ 모바일 전체 너비 대응 */
+@media (max-width: 430px) {
+  .app-container {
+    max-width: 100vw;
+    width: 100vw;
+  }
+  .home-screen {
+    max-width: 100vw;
+    width: 100vw;
+  }
+  .filter-search-input {
+    width: 120px;  /* 좁은 화면에서 검색창 축소 */
+  }
+}
+
 .filter-bar {
   background: #fff;
   border-bottom: 1px solid var(--gray-light);
   flex-shrink: 0;
+  overflow: hidden;  /* ✅ 추가 */
 }
 .filter-bar-row1 {
   display: flex;
@@ -566,6 +596,7 @@ input  { font-family: var(--font); }
   gap: 3px;
   overflow-x: auto;
   flex: 1;
+  min-width: 0;  /* ✅ flex 자식이 넘치지 않게 */
 }
 .filter-region-tabs::-webkit-scrollbar { display: none; }
 .filter-region-tab {
