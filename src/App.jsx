@@ -135,6 +135,7 @@ export default function App() {
             </button>
           </nav>
 
+          {mainTab === "map" && (
           <div className="filter-bar">
             <div className="filter-bar-row1">
               <div className="filter-search-wrap">
@@ -162,7 +163,6 @@ export default function App() {
                 ))}
               </div>
             </div>
-            {mainTab === "map" && (
               <div className="filter-bar-row2">
                 <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
                   <label className="filter-visited-label">
@@ -186,8 +186,6 @@ export default function App() {
                 </div>
                 <span className="filter-count">{filteredTemples.length}곳</span>
               </div>
-            )}
-            {mainTab === "map" && (
               <div className="filter-bar-unesco-note">
                 <span style={{ color: "#1565C0", fontWeight: "600" }}>파란색 사찰명</span>
                 <span>은 유네스코 세계유산</span>
@@ -196,8 +194,8 @@ export default function App() {
                   <span>금색 동그라미는 방문 완료</span>
                 </span>
               </div>
-            )}
           </div>
+          )}
 
           {(gpsLoading || gpsError) && (
             <div className="gps-status-bar">
