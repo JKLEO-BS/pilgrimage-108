@@ -225,38 +225,6 @@ export default function TempleMap({
             {isSatellite ? "🛰️ 위성" : "🗺️ 일반"}
           </button>
 
-          {/* 홈 버튼 — 우측 상단 */}
-          <button
-            onClick={() => { window.location.href = "/"; }}
-            title="홈으로"
-            style={{
-              position: "absolute", top: "10px", right: "10px",
-              width: "36px", height: "36px",
-              background: "rgba(22, 38, 28, 0.82)",
-              border: "1px solid rgba(212, 175, 55, 0.35)",
-              borderRadius: "8px",
-              cursor: "pointer", zIndex: 10,
-              boxShadow: "0 2px 8px rgba(0,0,0,0.35)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              backdropFilter: "blur(4px)",
-              transition: "background 0.18s, border-color 0.18s",
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.background = "rgba(45, 74, 62, 0.95)";
-              e.currentTarget.style.borderColor = "rgba(212, 175, 55, 0.7)";
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.background = "rgba(22, 38, 28, 0.82)";
-              e.currentTarget.style.borderColor = "rgba(212, 175, 55, 0.35)";
-            }}
-          >
-            {/* 심플 홈 아이콘 SVG */}
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 10.5L12 3L21 10.5V21H15V15H9V21H3V10.5Z"
-                stroke="#D4AF37" strokeWidth="1.8" strokeLinejoin="round" fill="none"/>
-            </svg>
-          </button>
-
           {/* 내 위치 버튼 */}
           {userPosition && (
             <button className="map-my-location-btn" onClick={handleGoToMyLocation} title="내 위치로 이동">
