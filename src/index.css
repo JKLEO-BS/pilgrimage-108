@@ -36,9 +36,10 @@ body {
   background: #1a2e26;
   color: var(--brown);
   height: 100dvh;
+  width: 100vw;
   overflow: hidden;
-  overflow-x: hidden;   /* ✅ 추가 */
-  max-width: 100vw;     /* ✅ 추가 */
+  overflow-x: hidden;
+  max-width: 100vw;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -50,13 +51,14 @@ input  { font-family: var(--font); }
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: min(100vw, 430px);
   max-width: 430px;
   height: 100dvh;
   overflow: hidden;
-  overflow-x: hidden;   /* ✅ 추가 */
+  overflow-x: hidden;
   background: var(--beige);
   box-shadow: 0 0 60px rgba(0,0,0,0.5);
+  flex-shrink: 0;
 }
 
 .offline-banner {
