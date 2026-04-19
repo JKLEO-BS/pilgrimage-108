@@ -173,8 +173,8 @@ export default function App() {
               <span className="filter-count">{filteredTemples.length}곳</span>
             </div>
             <div className="filter-bar-unesco-note">
-              <span className="filter-bar-unesco-dot" />
-              <span>파란색 사찰명은 유네스코 세계유산</span>
+              <span style={{ color: "#1565C0", fontWeight: "600" }}>파란색 사찰명</span>
+              <span>은 유네스코 세계유산</span>
               <span style={{ marginLeft: "10px", display: "flex", alignItems: "center", gap: "4px" }}>
                 <span style={{ display: "inline-block", width: "8px", height: "8px", borderRadius: "50%", background: "var(--gold)", flexShrink: 0 }} />
                 <span>금색 동그라미는 방문 완료</span>
