@@ -67,6 +67,7 @@ export default function App() {
           onExit={() => setShowBow(false)}
           getTodayRecord={getTodayRecord}
           saveCount={saveCount}
+          onCalendar={() => { setShowBow(false); setShowBowCalendar(true); }}
         />
       )}
       {showBowCalendar && (
