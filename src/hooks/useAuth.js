@@ -101,6 +101,7 @@ export function useAuth() {
     localStorage.removeItem("temipleDiaries");
     localStorage.removeItem("bow108Records");
     setUser(null);
+    window.location.reload();
   };
 
   return { user, loading, loginWithKakao, handleCallback, logout };
