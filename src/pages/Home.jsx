@@ -55,9 +55,6 @@ export default function Home({ visitedCount, totalCount, onStart, onBrowse, onBo
         <button className="home-btn-secondary" onClick={onBrowse}>
           108 사찰 둘러보기
         </button>
-        <button className="home-btn-bow-cal" onClick={onBowCalendar}>
-          나의 108배 기록 확인하기
-        </button>
 
         {/* 통계 */}
         <div className="home-stats">
