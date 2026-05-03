@@ -31,11 +31,12 @@ function toFirestoreFields(records) {
 
 export function useBow(userId = null) {
   const [records, setRecords] = useState({});
-  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (userId) loadFromFirebase(userId);
-    else loadFromLocal();
+    // 항상 localStorage 먼저 로드 (즉시 표시)
+    loadFromLocal();
+    // 로그인 상태면 Firebase에서 최신 데이터 동기화
+    if (userId) syncFromFirebase(userId);
   }, [userId]);
 
   const loadFromLocal = () => {
@@ -46,37 +47,29 @@ export function useBow(userId = null) {
   };
 
   const saveToLocal = (data) => {
-    localStorage.setItem(LOCAL_KEY, JSON.stringify(data));
+    try {
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(data));
+    } catch {}
   };
 
-  const loadFromFirebase = async (uid) => {
+  const syncFromFirebase = async (uid) => {
     try {
       const doc = await firestoreGet("bow108", uid);
       const parsed = parseFirestoreDoc(doc);
-      if (Object.keys(parsed).length > 0) setRecords(parsed);
-      else loadFromLocal();
-    } catch {
-      loadFromLocal();
-    }
+      if (Object.keys(parsed).length > 0) {
+        const local = JSON.parse(localStorage.getItem(LOCAL_KEY) || "{}");
+        const merged = { ...parsed, ...local };
+        // 완료된 기록은 Firebase 우선
+        for (const date of Object.keys(parsed)) {
+          if (parsed[date]?.completed) merged[date] = parsed[date];
+        }
+        setRecords(merged);
+        saveToLocal(merged);
+      }
+    } catch {}
   };
 
-  const saveToFirebase = async (uid, data) => {
-    try {
-      await firestoreSet("bow108", uid, toFirestoreFields(data));
-    } catch {
-      saveToLocal(data);
-    }
-  };
-
-  // 오늘 기록 가져오기
-  const getTodayRecord = () => {
-    const today = todayStr();
-    return records[today] || { count: 0, completed: false, date: today };
-  };
-
-  // 카운트 저장
   const saveCount = async (count) => {
-    setSaving(true);
     const today = todayStr();
     const completed = count >= 108;
     const updated = {
@@ -85,16 +78,27 @@ export function useBow(userId = null) {
         date: today,
         count: Math.min(count, 108),
         completed,
-        completedAt: completed ? new Date().toISOString() : null,
+        completedAt: completed
+          ? new Date().toISOString()
+          : (records[today]?.completedAt || null),
       },
     };
+
     setRecords(updated);
-    if (userId) await saveToFirebase(userId, updated);
-    else saveToLocal(updated);
-    setSaving(false);
+    saveToLocal(updated);
+
+    if (userId) {
+      try {
+        await firestoreSet("bow108", userId, toFirestoreFields(updated));
+      } catch {}
+    }
   };
 
-  // 오늘 기록 초기화
+  const getTodayRecord = () => {
+    const today = todayStr();
+    return records[today] || { count: 0, completed: false, date: today };
+  };
+
   const resetToday = async () => {
     const today = todayStr();
     const updated = {
@@ -102,9 +106,13 @@ export function useBow(userId = null) {
       [today]: { date: today, count: 0, completed: false, completedAt: null },
     };
     setRecords(updated);
-    if (userId) await saveToFirebase(userId, updated);
-    else saveToLocal(updated);
+    saveToLocal(updated);
+    if (userId) {
+      try {
+        await firestoreSet("bow108", userId, toFirestoreFields(updated));
+      } catch {}
+    }
   };
 
-  return { records, saving, getTodayRecord, saveCount, resetToday };
+  return { records, getTodayRecord, saveCount, resetToday };
 }
