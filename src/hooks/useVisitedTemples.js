@@ -14,6 +14,38 @@ function parseFirestoreDoc(doc) {
   return { ids, dates };
 }
 
+// Firestore REST API 직접 호출 (firestoreSet 우회 - mapValue 직접 처리)
+const PROJECT_ID = import.meta.env.VITE_FIREBASE_PROJECT_ID;
+const FIREBASE_API_KEY = import.meta.env.VITE_FIREBASE_API_KEY;
+
+async function savePilgrimageToFirestore(uid, ids, dates) {
+  const url = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/pilgrimages/${uid}?key=${FIREBASE_API_KEY}`;
+
+  const datesFields = {};
+  for (const [k, v] of Object.entries(dates)) {
+    datesFields[k] = { stringValue: String(v) };
+  }
+
+  const body = {
+    fields: {
+      visitedIds: {
+        arrayValue: {
+          values: ids.map(id => ({ stringValue: id }))
+        }
+      },
+      visitedDates: {
+        mapValue: { fields: datesFields }
+      }
+    }
+  };
+
+  await fetch(url, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+}
+
 export function useVisitedTemples(userId = null) {
   const [visitedIds, setVisitedIds] = useState([]);
   const [visitedDates, setVisitedDates] = useState({});
@@ -33,8 +65,11 @@ export function useVisitedTemples(userId = null) {
         const data = JSON.parse(raw);
         setVisitedIds(data.ids || []);
         setVisitedDates(data.dates || {});
+      } else {
+        setVisitedIds([]);
+        setVisitedDates({});
       }
-    } catch (e) {}
+    } catch {}
   };
 
   const saveToLocal = (ids, dates) => {
@@ -45,25 +80,17 @@ export function useVisitedTemples(userId = null) {
     try {
       const doc = await firestoreGet("pilgrimages", uid);
       const parsed = parseFirestoreDoc(doc);
-      if (parsed) {
+      if (parsed && parsed.ids.length > 0) {
         setVisitedIds(parsed.ids);
         setVisitedDates(parsed.dates);
+        // Firebase 데이터를 localStorage에도 캐시
+        saveToLocal(parsed.ids, parsed.dates);
       } else {
+        // Firebase에 없으면 로컬 확인
         loadFromLocal();
       }
-    } catch (e) {
+    } catch {
       loadFromLocal();
-    }
-  };
-
-  const saveToFirebase = async (uid, ids, dates) => {
-    try {
-      await firestoreSet("pilgrimages", uid, {
-        visitedIds: ids,
-        visitedDates: dates,
-      });
-    } catch (e) {
-      saveToLocal(ids, dates);
     }
   };
 
@@ -73,8 +100,8 @@ export function useVisitedTemples(userId = null) {
     const newDates = { ...visitedDates, [templeId]: date };
     setVisitedIds(newIds);
     setVisitedDates(newDates);
-    if (userId) saveToFirebase(userId, newIds, newDates);
-    else saveToLocal(newIds, newDates);
+    saveToLocal(newIds, newDates);
+    if (userId) savePilgrimageToFirestore(userId, newIds, newDates);
   };
 
   const unmarkVisited = (templeId) => {
@@ -83,8 +110,8 @@ export function useVisitedTemples(userId = null) {
     delete newDates[templeId];
     setVisitedIds(newIds);
     setVisitedDates(newDates);
-    if (userId) saveToFirebase(userId, newIds, newDates);
-    else saveToLocal(newIds, newDates);
+    saveToLocal(newIds, newDates);
+    if (userId) savePilgrimageToFirestore(userId, newIds, newDates);
   };
 
   const isVisited = (templeId) => visitedIds.includes(templeId);
