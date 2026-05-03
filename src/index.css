@@ -1192,3 +1192,316 @@ input  { font-family: var(--font); }
   font-family: var(--font);
 }
 .diary-go-detail-btn:hover { background: var(--green-mid); }
+
+/* ══════════════════════════════════════
+   108배 수행 화면
+══════════════════════════════════════ */
+.bow-screen {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: 100dvh;
+  z-index: 300;
+  background: #080d0a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+.bow-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 0.5px solid rgba(212,175,55,0.1);
+  flex-shrink: 0;
+}
+.bow-header-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.8);
+  letter-spacing: 1px;
+}
+.bow-exit-btn {
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font);
+  width: 60px;
+  text-align: left;
+}
+.bow-count-area {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 28px 0 0;
+}
+.bow-count-num {
+  font-size: 72px;
+  font-weight: 700;
+  color: #D4AF37;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+.bow-count-label {
+  font-size: 18px;
+  color: rgba(255,255,255,0.3);
+  font-weight: 400;
+}
+.bow-lotus-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  gap: 20px;
+  width: 100%;
+  padding: 20px;
+}
+.bow-touch-hint {
+  font-size: 13px;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 2px;
+}
+.bow-progress-area {
+  width: 100%;
+  padding: 0 32px 40px;
+  flex-shrink: 0;
+}
+.bow-progress-track {
+  width: 100%;
+  height: 2px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 1px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.bow-progress-fill {
+  height: 100%;
+  background: #D4AF37;
+  border-radius: 1px;
+  transition: width 0.3s ease;
+}
+.bow-progress-pct {
+  text-align: right;
+  font-size: 11px;
+  color: rgba(212,175,55,0.5);
+}
+.bow-complete-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+.bow-complete-card {
+  background: #0f1a12;
+  border: 1px solid rgba(212,175,55,0.3);
+  border-radius: 20px;
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 24px;
+}
+.bow-complete-icon { font-size: 40px; }
+.bow-complete-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #D4AF37;
+  letter-spacing: 1px;
+}
+.bow-complete-desc {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  text-align: center;
+  line-height: 1.8;
+}
+.bow-complete-btn {
+  margin-top: 8px;
+  width: 100%;
+  padding: 13px;
+  background: #D4AF37;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #080d0a;
+  cursor: pointer;
+  font-family: var(--font);
+}
+
+/* ══════════════════════════════════════
+   108배 달력 화면
+══════════════════════════════════════ */
+.bow-calendar-screen {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: 100dvh;
+  z-index: 300;
+  background: #080d0a;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.bow-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 0.5px solid rgba(212,175,55,0.1);
+  flex-shrink: 0;
+}
+.bow-cal-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.8);
+  letter-spacing: 1px;
+}
+.bow-cal-back {
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font);
+  width: 60px;
+  text-align: left;
+}
+.bow-cal-stats {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  padding: 20px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.05);
+}
+.bow-cal-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.bow-cal-stat-num {
+  font-size: 28px;
+  font-weight: 700;
+  color: #D4AF37;
+  line-height: 1;
+}
+.bow-cal-stat-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+}
+.bow-cal-stat-div {
+  width: 1px;
+  height: 32px;
+  background: rgba(212,175,55,0.15);
+}
+.bow-cal-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px 8px;
+}
+.bow-cal-nav-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.8);
+}
+.bow-cal-nav-btn {
+  font-size: 22px;
+  color: rgba(212,175,55,0.6);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 12px;
+  line-height: 1;
+}
+.bow-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  padding: 0 12px 16px;
+}
+.bow-cal-day-label {
+  text-align: center;
+  font-size: 11px;
+  padding: 8px 0;
+  font-weight: 500;
+}
+.bow-cal-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 2px 8px;
+  border-radius: 8px;
+  min-height: 52px;
+}
+.bow-cal-cell.today {
+  background: rgba(212,175,55,0.06);
+  border: 0.5px solid rgba(212,175,55,0.2);
+}
+.bow-cal-date {
+  font-size: 12px;
+  line-height: 1;
+}
+.bow-cal-legend {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  padding: 12px 20px 32px;
+  border-top: 0.5px solid rgba(255,255,255,0.05);
+}
+.bow-cal-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+}
+
+/* 108배 버튼 */
+.home-btn-bow {
+  width: 100%;
+  padding: 14px;
+  background: transparent;
+  border: 1px solid rgba(212,175,55,0.4);
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #D4AF37;
+  cursor: pointer;
+  font-family: var(--font);
+  letter-spacing: 0.5px;
+}
+.home-btn-bow:active { opacity: 0.75; }
+.home-btn-bow-cal {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  font-size: 12px;
+  color: rgba(255,255,255,0.25);
+  cursor: pointer;
+  font-family: var(--font);
+  letter-spacing: 0.5px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
