@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Home({ visitedCount, totalCount, onStart, onBrowse, user, loginWithKakao, logout }) {
+export default function Home({ visitedCount, totalCount, onStart, onBrowse, onBow, onBowCalendar, user, loginWithKakao, logout }) {
   const percent = totalCount > 0 ? Math.round((visitedCount / totalCount) * 100) : 0;
 
   return (
@@ -49,8 +49,14 @@ export default function Home({ visitedCount, totalCount, onStart, onBrowse, user
         <button className="home-btn-primary" onClick={onStart}>
           순례 시작하기
         </button>
+        <button className="home-btn-bow" onClick={onBow}>
+          108배 시작하기
+        </button>
         <button className="home-btn-secondary" onClick={onBrowse}>
           108 사찰 둘러보기
+        </button>
+        <button className="home-btn-bow-cal" onClick={onBowCalendar}>
+          나의 108배 기록 확인하기
         </button>
 
         {/* 통계 */}
