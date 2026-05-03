@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-
 const KAKAO_REST_KEY = import.meta.env.VITE_KAKAO_REST_KEY;
 const REDIRECT_URI = "https://pilgrimage-108.vercel.app/auth/kakao/callback";
 const PROJECT_ID = import.meta.env.VITE_FIREBASE_PROJECT_ID;
@@ -83,7 +82,6 @@ export function useAuth() {
       localStorage.setItem("kakao_user", JSON.stringify(userData));
       setUser(userData);
 
-      // Firebase에 사용자 저장
       await firestoreSet("users", userData.id, {
         id: userData.id,
         nickname: userData.nickname,
@@ -99,6 +97,9 @@ export function useAuth() {
 
   const logout = () => {
     localStorage.removeItem("kakao_user");
+    localStorage.removeItem("visitedTemples");
+    localStorage.removeItem("temipleDiaries");
+    localStorage.removeItem("bow108Records");
     setUser(null);
   };
 
