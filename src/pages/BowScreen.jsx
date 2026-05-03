@@ -76,7 +76,7 @@ function LotusIcon({ size = 260, pulsing = false }) {
   );
 }
 
-export default function BowScreen({ onExit, getTodayRecord, saveCount, saving }) {
+export default function BowScreen({ onExit, getTodayRecord, saveCount, saving, onCalendar }) {
   const todayRecord = getTodayRecord();
   const [count, setCount] = useState(todayRecord.count || 0);
   const [pulsing, setPulsing] = useState(false);
@@ -152,6 +152,11 @@ export default function BowScreen({ onExit, getTodayRecord, saveCount, saving })
         </div>
         <div className="bow-progress-pct">{percent}%</div>
       </div>
+
+      {/* 기록 확인 버튼 */}
+      <button className="bow-cal-link" onClick={onCalendar}>
+        나의 108배 기록 확인하기
+      </button>
 
       {/* 완료 팝업 */}
       {showComplete && (
