@@ -5,10 +5,13 @@ import { useVisitedTemples } from "./hooks/useVisitedTemples";
 import { useGeolocation } from "./hooks/useGeolocation";
 import { useOfflineStatus } from "./hooks/useOfflineStatus";
 import { useDiary } from "./hooks/useDiary";
+import { useBow } from "./hooks/useBow";
 import TempleMap from "./components/Map/TempleMap";
 import TempleList from "./components/Sidebar/TempleList";
 import TempleDetail from "./components/Sidebar/TempleDetail";
 import DiaryTab from "./components/Sidebar/DiaryTab";
+import BowScreen from "./pages/BowScreen";
+import BowCalendar from "./pages/BowCalendar";
 import InstallPrompt from "./components/UI/InstallPrompt";
 import Home from "./pages/Home";
 
@@ -18,6 +21,9 @@ export default function App() {
     useVisitedTemples(user?.id);
   const { saving, saveDiaryEntry, deleteDiaryEntry, getDiaryEntries } =
     useDiary(user?.id);
+  const { records, getTodayRecord, saveCount } = useBow(user?.id);
+  const [showBow, setShowBow] = useState(false);
+  const [showBowCalendar, setShowBowCalendar] = useState(false);
   const {
     position: userPosition,
     error: gpsError,
@@ -56,12 +62,27 @@ export default function App() {
 
   return (
     <div className="app-container">
+      {showBow && (
+        <BowScreen
+          onExit={() => setShowBow(false)}
+          getTodayRecord={getTodayRecord}
+          saveCount={saveCount}
+        />
+      )}
+      {showBowCalendar && (
+        <BowCalendar
+          records={records}
+          onBack={() => setShowBowCalendar(false)}
+        />
+      )}
       {showHome ? (
         <Home
           visitedCount={stats.visited}
           totalCount={stats.total}
           onStart={() => { setShowHome(false); setMainTab("map"); }}
           onBrowse={() => { setShowHome(false); setMainTab("map"); }}
+          onBow={() => setShowBow(true)}
+          onBowCalendar={() => setShowBowCalendar(true)}
           user={user}
           loginWithKakao={loginWithKakao}
           logout={logout}
