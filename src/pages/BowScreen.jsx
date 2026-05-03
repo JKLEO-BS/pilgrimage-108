@@ -107,9 +107,9 @@ export default function BowScreen({ onExit, getTodayRecord, saveCount, saving })
     }
   };
 
-  const handleExit = () => {
+  const handleExit = async () => {
     if (saveTimer.current) clearTimeout(saveTimer.current);
-    saveCount(count);
+    await saveCount(count);
     onExit();
   };
 
